@@ -1,0 +1,18 @@
+﻿<Window x:Class="BasketballStatistics.UI.NewGameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BasketballStatistics.UI"
+        mc:Ignorable="d"
+        Icon="Img/basketball.ico"
+        Title="Game" Height="400" Width="500"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Label FontSize="20">Here is a new game</Label>
+            <Button Name="btnSave" Width="100" Margin="0 5 0 0" Padding="4" Background="LightCoral" Click="btnSave_Click">Save</Button>
+        </StackPanel>
+    </Grid>
+</Window>
