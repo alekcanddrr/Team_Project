@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Icon="Img/basketball.ico"
+        Title="Basketball Statistics" Height="230" Width="300"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel VerticalAlignment="Center">
+            <Label FontSize="18" HorizontalAlignment="Center">
+                <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center">
+                    Welcome to Basketball Statistics application!
+                </TextBlock>
+            </Label>
+            <TextBlock FontSize="17" TextAlignment="Center" FontWeight="Light">
+                <Run>This application offers some features:</Run>
+            </TextBlock>
+        </StackPanel>
+
+        <Button Name="btnAdd" Grid.Row="1" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnAdd_Click">Add a new game</Button>
+        <Button Name="btnAll" Grid.Row="2" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAll_Click">All games</Button>
         
     </Grid>
 </Window>

@@ -1,0 +1,18 @@
+﻿<Window x:Class="BasketballStatistics.UI.GameResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BasketballStatistics.UI"
+        mc:Ignorable="d"
+        Icon="Img/basketball.ico"
+        Title="Result of a game" Height="300" Width="400"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label FontSize="20">A game's result window</Label>
+            <Button Name="btnClose" Width="100" FontSize="16" Background="LightCoral" Margin="0 5 0 0" Click="btnClose_Click">Close</Button>
+        </StackPanel>
+    </Grid>
+</Window>

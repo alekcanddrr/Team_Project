@@ -24,5 +24,17 @@ namespace BasketballStatistics.UI
         {
             InitializeComponent();
         }
+
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            AddGameWindow addWindow = new AddGameWindow { Owner = this };
+            addWindow.Show();
+        }
+
+        private void btnAll_Click(object sender, RoutedEventArgs e)
+        {
+            AllGamesWindow gamesWindow = new AllGamesWindow { Owner = this };
+            gamesWindow.Show();
+        }
     }
 }
