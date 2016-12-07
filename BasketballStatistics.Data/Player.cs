@@ -15,6 +15,6 @@ namespace BasketballStatistics.Data
         public double Mass { get; set; }
         public int Age { get; set; }
         public string Position { get; set; }
-        public List<Statistics> PersonalStatistics { get; set; }
+        public virtual List<Statistics> PersonalStatistics { get; set; }
     }
 }

@@ -11,8 +11,8 @@ namespace BasketballStatistics.Data
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public string Place { get; set; }
-        public Team Team1 { get; set; }
-        public Team Team2 { get; set; }
+        public virtual Team Team1 { get; set; }
+        public virtual Team Team2 { get; set; }
         public string FinalScore { get; set; }
 
     }

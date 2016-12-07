@@ -9,7 +9,7 @@ namespace BasketballStatistics.Data
     public class Statistics
     {
         public int Id { get; set; }
-        public Match Match { get; set; }
+        public virtual Match Match { get; set; }
         public int Points { get; set; }
         public int Assists { get; set; }
         public int Rebounds { get; set; }
