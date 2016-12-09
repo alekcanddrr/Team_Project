@@ -13,7 +13,7 @@ namespace BasketballStatistics.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201611291607567_Initial"; }
+            get { return "201612091836442_Initial"; }
         }
         
         string IMigrationMetadata.Source

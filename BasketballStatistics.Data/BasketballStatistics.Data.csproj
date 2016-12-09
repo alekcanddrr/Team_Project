@@ -50,20 +50,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Coach.cs" />
+    <Compile Include="CommandStatistics.cs" />
     <Compile Include="CommandStatisticsViewModel.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Match.cs" />
     <Compile Include="MatchViewModel.cs" />
-    <Compile Include="Migrations\201611291607567_Initial.cs" />
-    <Compile Include="Migrations\201611291607567_Initial.Designer.cs">
-      <DependentUpon>201611291607567_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201612091836442_Initial.cs" />
+    <Compile Include="Migrations\201612091836442_Initial.Designer.cs">
+      <DependentUpon>201612091836442_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="PersonalStatistics.cs" />
     <Compile Include="PersonalStatisticsViewModel.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
-    <Compile Include="Statistics.cs" />
     <Compile Include="Team.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,8 +72,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611291607567_Initial.resx">
-      <DependentUpon>201611291607567_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201612091836442_Initial.resx">
+      <DependentUpon>201612091836442_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

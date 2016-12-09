@@ -12,7 +12,8 @@ namespace BasketballStatistics.Data
         public DbSet<Coach> Coaches { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<Statistics> Statistics { get; set; }
+        public DbSet<PersonalStatistics> PersonalStatistics { get; set; }
+        public DbSet<CommandStatistics> CommandStatistics { get; set; }
         public DbSet<Match> Matches { get; set; }
 
         public Context(): base("localsql")
