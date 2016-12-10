@@ -75,6 +75,7 @@
     <Compile Include="Repository.cs" />
     <Compile Include="Entities\Team.cs" />
     <Compile Include="DBO\ShortCommandStatisticsViewModel.cs" />
+    <Compile Include="RepositoryGame.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
