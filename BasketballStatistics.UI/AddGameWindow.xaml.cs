@@ -32,7 +32,7 @@ namespace BasketballStatistics.UI
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            NewGameWindow gameWindow = new NewGameWindow { Owner = this };
+            NewGameWindow gameWindow = new NewGameWindow(GameType.New) { Owner = this };
             gameWindow.Show();
         }
 

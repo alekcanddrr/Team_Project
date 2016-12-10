@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,22 +12,28 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+// Project classes.
+using BasketballStatistics.Data;
 
 namespace BasketballStatistics.UI
 {
     /// <summary>
-    /// Логика взаимодействия для GameResultWindow.xaml
+    /// Логика взаимодействия для AddNewItemWindow.xaml
     /// </summary>
-    public partial class GameResultWindow : Window
+    public partial class AddTeamWindow : Window
     {
-        public GameResultWindow()
+        public AddTeamWindow()
         {
             InitializeComponent();
+            // To make focus on the owner window (MainWindow).
+            Closing += (object sender, CancelEventArgs e) => Owner.Focus();
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            Team team = new Team { Name = txtName.Name };
             Close();
+            Owner.Focus();
         }
     }
 }

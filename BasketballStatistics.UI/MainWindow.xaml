@@ -6,12 +6,14 @@
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
         Icon="Img/basketball.ico"
-        Title="Basketball Statistics" Height="230" Width="300"
+        Title="Basketball Statistics" Height="320" Width="300"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
+            <RowDefinition/>
+            <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -27,8 +29,9 @@
             </TextBlock>
         </StackPanel>
 
-        <Button Name="btnAdd" Grid.Row="1" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnAdd_Click">Add a new game</Button>
-        <Button Name="btnAll" Grid.Row="2" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAll_Click">All games</Button>
-        
+        <Button Name="btnAdd" Grid.Row="1" FontSize="15" Padding="4" Width="160" Background="LightGreen" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnAdd_Click">New game</Button>
+        <Button Name="btnAll" Grid.Row="4" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnAll_Click">All games</Button>
+        <Button Name="btnNewPlayer" Grid.Row="2" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center">New player</Button>
+        <Button Name="btnNewTeam" Grid.Row="3" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnNewTeam_Click">New team</Button>
     </Grid>
 </Window>

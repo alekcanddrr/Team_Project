@@ -23,7 +23,7 @@
 
         <DockPanel Grid.Row="1" Margin="0 0 5 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of all games:</Label>
-            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged">
+            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged" MouseDoubleClick="gamesList_MouseDoubleClick">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Team №1" Width="115">
@@ -47,7 +47,7 @@
         </DockPanel>
         <Button Name="btnGameInfo" Grid.Row="2" VerticalAlignment="Center" Width="100" Background="LightCoral" FontSize="15" IsEnabled="False" Click="btnGameInfo_Click">Show info</Button>
 
-        <DockPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Margin="5 0 0 0">
+        <DockPanel Grid.Row="1" Grid.Column="1" Margin="5 0 0 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of teams:</Label>
             <ListView Name="teamsList" FontSize="15">
                 <ListView.View>
@@ -59,12 +59,12 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Wins" DisplayMemberBinding="{Binding Wins}" Width="50"/>
-                        <GridViewColumn Header="Draws" DisplayMemberBinding="{Binding Draws}" Width="50"/>
-                        <GridViewColumn Header="Loses" DisplayMemberBinding="{Binding Loses}" Width="50"/>
+                        <GridViewColumn Header="Wins" DisplayMemberBinding="{Binding Wins}" Width="75"/>
+                        <GridViewColumn Header="Loses" DisplayMemberBinding="{Binding Loses}" Width="75"/>
                     </GridView>
                 </ListView.View>
             </ListView>
         </DockPanel>
+        <Button Name="btnReturn" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="100" Background="LightCoral" FontSize="15" Click="btnReturn_Click">Return</Button>
     </Grid>
 </Window>

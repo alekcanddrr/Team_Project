@@ -14,12 +14,16 @@ using System.Windows.Shapes;
 
 namespace BasketballStatistics.UI
 {
+    public enum GameType
+    {
+        New, Old
+    }
     /// <summary>
     /// Логика взаимодействия для NewGameWindow.xaml
     /// </summary>
     public partial class NewGameWindow : Window
     {
-        public NewGameWindow()
+        public NewGameWindow(GameType gameType)
         {
             InitializeComponent();
         }
