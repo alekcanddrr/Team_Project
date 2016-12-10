@@ -8,17 +8,17 @@ namespace BasketballStatistics.Data
 {
     public class Repository
     {
-        //public IQueryable<MatchViewModel> AllMatchesData(Context context)
-        //{
-        //    var result = from match in context.Matches
-        //                 select new MatchViewModel
-        //                 {
-        //                     FirstTeam = match.Team1.Name,
-        //                     SecondTeam = match.Team2.Name,
-        //                     Score = match.FinalScore
-        //                 };
-        //    return result;
-        //}
+        public IQueryable<MatchViewModel> AllMatchesData(Context context)
+        {
+            var result = from match in context.Matches
+                         select new MatchViewModel
+                         {
+                             FirstTeam = match.Team1.Name,
+                             SecondTeam = match.Team2.Name,
+                             Score = match.Team1Score.ToString() + ":" + match.Team2Score.ToString()
+                         };
+            return result;
+        }
 
         //public Team FindTeam(Context context, string Name)
         //{
@@ -34,14 +34,14 @@ namespace BasketballStatistics.Data
         //                 select team.Name;
         //    return result;
         //}
-        //public Match FindMatch(Context context, string firstTeam, string secondTeam, string finalScore)
-        //{
-        //    var search = from match in context.Matches
-        //                 where (match.Team1.Name == firstTeam && match.Team2.Name == secondTeam && match.FinalScore == finalScore)
-        //                 select match;
-        //    var result = search.First();
-        //    return result;
-        //}
+        public Match FindMatch(Context context, string firstTeam, string secondTeam, string finalScore)
+        {
+            var search = from match in context.Matches
+                         where (match.Team1.Name == firstTeam && match.Team2.Name == secondTeam && match.Team1Score == int.Parse(finalScore.Split(':')[0]) && match.Team2Score == int.Parse(finalScore.Split(':')[1]))
+                         select match;
+            var result = search.First();
+            return result;
+        }
 
         //public IQueryable<CommandStatisticsViewModel> GameStatisticsOfTeam(Context context, Match match, string nameOfTeam)
         //{
@@ -62,6 +62,24 @@ namespace BasketballStatistics.Data
         //                     ShotsFromGameFarPercent = (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%"
         //                 };
         //    return result;
+        //}
+
+        //public void ShortStatisticsOfTeams(Context context)
+        //{
+        //    var teams = from team in context.Teams
+        //                select team;
+        //    foreach (var team in teams)
+        //    {
+        //        var wins = 0;
+        //        var loses = 0;
+        //        var statistics = from stat in context.CommandStatistics
+        //                         where stat.Team == team
+        //                         select stat;
+        //        foreach (var stats in statistics)
+        //        {
+        //            if 
+        //        }
+        //    }
         //}
     }
 }

@@ -13,7 +13,8 @@ namespace BasketballStatistics.Data
         public string Place { get; set; }
         public virtual Team Team1 { get; set; }
         public virtual Team Team2 { get; set; }
-        public string FinalScore { get; set; }
+        public int Team1Score { get; set; }
+        public int Team2Score { get; set; }
 
     }
 }
