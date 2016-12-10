@@ -63,6 +63,10 @@
     <Compile Include="Migrations\201612101233235_ScoreIsInt.Designer.cs">
       <DependentUpon>201612101233235_ScoreIsInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612101456535_PositionIsEnum.cs" />
+    <Compile Include="Migrations\201612101456535_PositionIsEnum.Designer.cs">
+      <DependentUpon>201612101456535_PositionIsEnum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Entities\PersonalStatistics.cs" />
     <Compile Include="DBO\PersonalStatisticsViewModel.cs" />
@@ -82,6 +86,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612101233235_ScoreIsInt.resx">
       <DependentUpon>201612101233235_ScoreIsInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612101456535_PositionIsEnum.resx">
+      <DependentUpon>201612101456535_PositionIsEnum.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
