@@ -20,5 +20,7 @@ namespace BasketballStatistics.Data
         public int ShotsFromGameSuccessfull { get; set; }
         public int ShotsFromGameFar { get; set; }
         public int ShotsFromGameFarSuccessfull { get; set; }
+        public int FreeThrows { get; set; }
+        public int FreeThrowsSuccessfull { get; set; }
     }
 }
