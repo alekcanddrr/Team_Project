@@ -9,9 +9,19 @@ namespace BasketballStatistics.Data
     public class Repository
     {
         Context context;
+
+        public IEnumerable<Team> AllTeams
+        {
+            get
+            {
+                using (context = new Context())
+                    return context.Teams.ToList();
+            }
+        }
+
         public IEnumerable<MatchViewModel> AllMatchesData()
         {
-            using (Context context = new Context())
+            using (context = new Context())
                 return (from match in context.Matches
                         select new MatchViewModel
                         {
@@ -21,25 +31,16 @@ namespace BasketballStatistics.Data
                         }).ToList();
         }
 
-        //public Team FindTeam(Context context, string Name)
-        //{
-        //    var teams = from team in context.Teams
-        //                 where team.Name == Name
-        //                 select team;
-        //    var result = teams.First();
-        //    return result;
-        //}
-        public IEnumerable<string> TeamBoxLoadWithData()
+        public Team FindTeam(string name)
         {
-            using (Context context = new Context())
-                return (from team in context.Teams
-                        select team.Name).ToList() ;
+            using (context = new Context())
+                return context.Teams.First(t => t.Name == name);
         }
+
         public Match FindMatch(string firstTeam, string secondTeam, string finalScore)
         {
             using (context = new Context())
             {
-
                 var search = from match in context.Matches
                              where (match.Team1.Name == firstTeam && match.Team2.Name == secondTeam && match.Team1Score == int.Parse(finalScore.Split(':')[0]) && match.Team2Score == int.Parse(finalScore.Split(':')[1]))
                              select match;

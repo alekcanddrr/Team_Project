@@ -24,24 +24,16 @@
 
         <StackPanel Grid.Row="1" VerticalAlignment="Top">
             <Label HorizontalAlignment="Center" FontWeight="Light" FontSize="17">Choose the first team:</Label>
-            <ComboBox Margin="10 0" Name="firstTeamBox" FontSize="15">
-                <ComboBoxItem IsSelected="True">Team 1</ComboBoxItem>
-                <ComboBoxItem IsEnabled="False">Team 2</ComboBoxItem>
-                <ComboBoxItem>Team 3</ComboBoxItem>
-                <ComboBoxItem>Team 4</ComboBoxItem>
-            </ComboBox>
+            <ComboBox Margin="10 0" Name="firstTeamBox" FontSize="15"></ComboBox>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
             <Label HorizontalAlignment="Center" FontWeight="Light" FontSize="17">Choose the second team:</Label>
-            <ComboBox Margin="10 0" Name="secondTeamBox" FontSize="15">
-                <ComboBoxItem IsEnabled="False">Team 1</ComboBoxItem>
-                <ComboBoxItem IsSelected="True">Team 2</ComboBoxItem>
-                <ComboBoxItem>Team 3</ComboBoxItem>
-                <ComboBoxItem>Team 4</ComboBoxItem>
-            </ComboBox>
+            <ComboBox Margin="10 0" Name="secondTeamBox" FontSize="15"></ComboBox>
         </StackPanel>
 
         <Button Name="btnStart" Grid.Row="2" Grid.ColumnSpan="2" FontSize="17" Padding="2" Margin="0 5" VerticalAlignment="Top" HorizontalAlignment="Center" Width="120" Background="LightCoral" Click="btnStart_Click">Start</Button>
+
+        <Label Name="loadingLabel" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18">Loading...</Label>
     </Grid>
 </Window>

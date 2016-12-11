@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+// Data library.
+using BasketballStatistics.Data;
 
 namespace BasketballStatistics.UI
 {
@@ -23,9 +25,11 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class NewGameWindow : Window
     {
-        public NewGameWindow(GameType gameType)
+        public NewGameWindow(GameType gameType, Team team1, Team team2)
         {
             InitializeComponent();
+
+            MessageBox.Show(team1.Name + " " + team2.Name);
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

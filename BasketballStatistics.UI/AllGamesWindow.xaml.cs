@@ -35,8 +35,8 @@ namespace BasketballStatistics.UI
 
         private void btnGameInfo_Click(object sender, RoutedEventArgs e)
         {
-            NewGameWindow resultWindow = new NewGameWindow(GameType.Old) { Owner = this };
-            resultWindow.Show();
+            //NewGameWindow resultWindow = new NewGameWindow(GameType.Old) { Owner = this };
+            //resultWindow.Show();
         }
 
         private void gamesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -46,8 +46,8 @@ namespace BasketballStatistics.UI
 
         private void gamesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            NewGameWindow resultWindow = new NewGameWindow(GameType.Old) { Owner = this };
-            resultWindow.Show();
+            //NewGameWindow resultWindow = new NewGameWindow(GameType.Old) { Owner = this };
+            //resultWindow.Show();
         }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)

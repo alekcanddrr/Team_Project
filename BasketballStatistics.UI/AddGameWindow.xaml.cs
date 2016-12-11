@@ -1,39 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+// Our library.
+using BasketballStatistics.Data;
 
 namespace BasketballStatistics.UI
 {
     /// <summary>
-    /// Логика взаимодействия для AddGameWindow.xaml
+    /// In this window we choose 2 teams (loaded from the DB) to play. Then pass it to the next window.
     /// </summary>
     public partial class AddGameWindow : Window
     {
+        Repository _repository = new Repository();
+
         public AddGameWindow()
         {
             InitializeComponent();
+            // Adding teams from the DB into ComboBoxes.
+            AddTeams();
 
             firstTeamBox.SelectionChanged += firstTeamBox_Selected;
             secondTeamBox.SelectionChanged += secondTeamBox_Selected;
             // To make focus on the owner window (MainWindow).
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
         }
-
-        private void btnStart_Click(object sender, RoutedEventArgs e)
+        
+        private void AddTeams()
         {
-            NewGameWindow gameWindow = new NewGameWindow(GameType.New) { Owner = this };
-            gameWindow.Show();
+            // Parallel adding teams into ComboBoxes. So the program doesn't stop.
+            Task task = new Task(() => Dispatcher.Invoke(() =>
+                {
+                    foreach (var team in _repository.AllTeams)
+                    {
+                        firstTeamBox.Items.Add(new ComboBoxItem { Content = team.Name });
+                        secondTeamBox.Items.Add(new ComboBoxItem { Content = team.Name });
+                    }
+                    // Making selected the first item. The second will be selected in the second ComboBox, so it is not enabled here.
+                    firstTeamBox.SelectedIndex = 0;
+                    (firstTeamBox.Items[1] as ComboBoxItem).IsEnabled = false;
+                    // Similarly in the second ComboBox.
+                    secondTeamBox.SelectedIndex = 1;
+                    (secondTeamBox.Items[0] as ComboBoxItem).IsEnabled = false;
+                }));
+            // When the task is completed - making hidden our label with "Loading" text.
+            task.ContinueWith(t => Dispatcher.Invoke(() => loadingLabel.Visibility = Visibility.Hidden));
+            task.Start();
         }
 
         private void firstTeamBox_Selected(object sender, RoutedEventArgs e)
@@ -52,6 +64,18 @@ namespace BasketballStatistics.UI
                 (comboBoxItem as ComboBoxItem).IsEnabled = true;
             // Making disabled an item in the first, which was selected.
             (firstTeamBox.Items[secondTeamBox.SelectedIndex] as ComboBoxItem).IsEnabled = false;
+        }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            // Getting teams by names.
+            var team1 = _repository.FindTeam(firstTeamBox.SelectionBoxItem.ToString());
+            var team2 = _repository.FindTeam(secondTeamBox.SelectionBoxItem.ToString());
+            // Passing these teams to the new window.
+            NewGameWindow gameWindow = new NewGameWindow(GameType.New, team1, team2) { Owner = Owner };
+            gameWindow.Show();
+            // Closing this window.
+            Close();
         }
     }
 }
