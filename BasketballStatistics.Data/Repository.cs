@@ -20,15 +20,6 @@ namespace BasketballStatistics.Data
                             Score = match.Team1Score.ToString() + ":" + match.Team2Score.ToString()
                         }).ToList();
         }
-
-        //public Team FindTeam(Context context, string Name)
-        //{
-        //    var teams = from team in context.Teams
-        //                 where team.Name == Name
-        //                 select team;
-        //    var result = teams.First();
-        //    return result;
-        //}
         public IEnumerable<string> TeamBoxLoadWithData()
         {
             using (Context context = new Context())
@@ -80,27 +71,27 @@ namespace BasketballStatistics.Data
             List<ShortCommandStatisticsViewModel> result = new List<ShortCommandStatisticsViewModel>();
             using (context = new Context())
             {
-                var teams = from team in context.Teams
-                            select team;
+                var teams = (from team in context.Teams
+                            select team).ToList();
                 foreach (var team in teams)
                 {
                     var wins = 0;
                     var loses = 0;
-                    var statistics = from stat in context.CommandStatistics
-                                     where stat.Team == team
-                                     select stat;
+                    var statistics = (from stat in context.CommandStatistics
+                                     where stat.Team.Name == team.Name
+                                     select stat).ToList();
                     foreach (var stats in statistics)
                     {
                         if (stats.Match.Team1 == team)
                         {
                             if (stats.Match.Team1Score > stats.Match.Team2Score) wins++;
-                            if (stats.Match.Team1Score < stats.Match.Team2Score) loses++;
+                            else loses++;
                         }
                         else
                             if (stats.Match.Team2 == team)
                         {
                             if (stats.Match.Team1Score > stats.Match.Team2Score) loses++;
-                            if (stats.Match.Team1Score < stats.Match.Team2Score) wins++;
+                            else wins++;
                         }
                     }
                     result.Add(new ShortCommandStatisticsViewModel { Name = team.Name, Wins = wins, Loses = loses });

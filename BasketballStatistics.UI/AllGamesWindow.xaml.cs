@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BasketballStatistics.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -20,17 +21,13 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AllGamesWindow : Window
     {
+        Repository repo = new Repository();
         public AllGamesWindow()
         {
             InitializeComponent();
             // To make focus on the owner window (MainWindow).
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
 
-            for (int i = 0, k = 20; i < 10 || k > 0; i++, k -= 2)
-                teamsList.Items.Add(new { Name = "Команда №" + (i+1), Wins = i, Loses = k });
-
-            for (int i = 0, j = 10; i < 10 || j > 0; i++, j--)
-                gamesList.Items.Add(new { FirstTeam = "Команда №" + (i+1), Score = i+":"+j, SecondTeam = "Команда №"+j });
         }
 
         private void btnGameInfo_Click(object sender, RoutedEventArgs e)
@@ -53,6 +50,18 @@ namespace BasketballStatistics.UI
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void gameList_loaded(object sender, RoutedEventArgs e)
+        {
+            var _allMatches = repo.AllMatchesData();
+            gamesList.ItemsSource = _allMatches;
+        }
+
+        private void teamsList_loaded(object sender, RoutedEventArgs e)
+        {
+            var _allTeams = repo.ShortStatisticsOfTeams();
+            teamsList.ItemsSource = _allTeams;
         }
     }
 }

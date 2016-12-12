@@ -23,7 +23,7 @@
 
         <DockPanel Grid.Row="1" Margin="0 0 5 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of all games:</Label>
-            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged" MouseDoubleClick="gamesList_MouseDoubleClick">
+            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged" MouseDoubleClick="gamesList_MouseDoubleClick" Loaded="gameList_loaded">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Team №1" Width="115">
@@ -49,7 +49,7 @@
 
         <DockPanel Grid.Row="1" Grid.Column="1" Margin="5 0 0 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of teams:</Label>
-            <ListView Name="teamsList" FontSize="15">
+            <ListView Name="teamsList" FontSize="15" Loaded="teamsList_loaded">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Team name" Width="150">
