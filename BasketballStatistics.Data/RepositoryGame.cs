@@ -40,6 +40,8 @@ namespace BasketballStatistics.Data
                 statTeam1.Team = c.Teams.First(t => t.Name == team1);
                 statTeam2.Team = c.Teams.First(t => t.Name == team2);
                 match = new Match { Date = DateTime.Now, Place = place, Team1 = statTeam1.Team, Team2 = statTeam2.Team };
+
+                stat.ForEach(s => s.Match = match);
                 statTeam1.Match = match;
                 statTeam2.Match = match;
             }
@@ -248,7 +250,15 @@ namespace BasketballStatistics.Data
 
         public void GameOver()
         {
+            using (Context c = new Context())
+            {
+                c.CommandStatistics.Add(statTeam1);
+                c.CommandStatistics.Add(statTeam2);
+                c.PersonalStatistics.AddRange(stat);
+                c.Matches.Add(match);
 
+                c.SaveChanges();
+            }
         }
 
     }
