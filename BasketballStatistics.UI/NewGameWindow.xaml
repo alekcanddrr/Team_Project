@@ -8,7 +8,7 @@
         Icon="Img/basketball.ico"
         Title="Game" Height="400" Width="500"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
             <Label FontSize="20">Here is a new game</Label>
