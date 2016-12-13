@@ -31,7 +31,7 @@
 
         <Button Name="btnAdd" Grid.Row="1" FontSize="15" Padding="4" Width="160" Background="LightGreen" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnAdd_Click">New game</Button>
         <Button Name="btnAll" Grid.Row="4" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnAll_Click">All games</Button>
-        <Button Name="btnNewPlayer" Grid.Row="2" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center">New player</Button>
+        <Button Name="btnNewPlayer" Grid.Row="2" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnNewPlayer_Click">New player</Button>
         <Button Name="btnNewTeam" Grid.Row="3" FontSize="15" Padding="4" Width="160" Background="LightCoral" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnNewTeam_Click">New team</Button>
     </Grid>
 </Window>

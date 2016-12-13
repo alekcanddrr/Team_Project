@@ -1,0 +1,72 @@
+﻿<Window x:Class="BasketballStatistics.UI.AddPlayerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BasketballStatistics.UI"
+        mc:Ignorable="d"
+        Title="New player" Width="400" Height="460"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Icon="Img/basketball.ico">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.ColumnSpan="2" FontSize="18" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontWeight="Thin">Add a new player</Label>
+
+        <Label FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right" Grid.Row="1">Name:</Label>
+        <TextBox Name="txtName" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Label Grid.Row="2" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Surname:</Label>
+        <TextBox Name="txtSurname" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Label Grid.Row="3" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Age:</Label>
+        <TextBox Name="txtAge" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Label Grid.Row="4" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Height:</Label>
+        <TextBox Name="txtHeight" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Label Grid.Row="5" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Weight:</Label>
+        <TextBox Name="txtWeight" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Label Grid.Row="6" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Position:</Label>
+        <ComboBox Name="comboBoxPosition" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" FontSize="15" Margin="10 0 10 0">
+            <!-- Если будем брать из БД -->
+            <!--<ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Position}"></TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>-->
+            <ComboBoxItem IsSelected="True">Point Guard</ComboBoxItem>
+            <ComboBoxItem>Shooting Guard</ComboBoxItem>
+            <ComboBoxItem>Small Forward</ComboBoxItem>
+            <ComboBoxItem>Power Forward</ComboBoxItem>
+            <ComboBoxItem>Center</ComboBoxItem>
+        </ComboBox>
+
+        <Label Grid.Row="7" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Team:</Label>
+        <ComboBox  Name="comboBoxTeam" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" FontSize="15" Margin="10 0 10 0">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" TextWrapping="WrapWithOverflow"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Button Name="btnAdd" Grid.ColumnSpan="2" Grid.Row="8" FontSize="15" Padding="3" Margin="0 5 0 0"  Width="160" Background="LightGreen" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAdd_Click">Add</Button>
+    </Grid>
+</Window>

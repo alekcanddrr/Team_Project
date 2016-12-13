@@ -35,7 +35,7 @@ namespace BasketballStatistics.Data
         public Team FindTeam(string name)
         {
             using (context = new Context())
-                return context.Teams.First(t => t.Name == name);
+                return context.Teams.FirstOrDefault(t => t.Name == name);
         }
 
         public Match FindMatch(string firstTeam, string secondTeam, string finalScore)
@@ -50,12 +50,12 @@ namespace BasketballStatistics.Data
             }
         }
         //Определение есть ли уже такой игрок в БД. Error - игрок есть, Ok - все нормально
-        public string FindPlayer(string _name, string _surname, double _height, double _weight, int _age, Position _position)
+        public Player FindPlayer(string _name, string _surname, double _height, double _weight, int _age, Position _position)
         {
-            Player player;
-            using (context = new Context()) player = context.Players.First(pl => pl.Name == _name && pl.Surname == _surname && pl.Height == _height && pl.Weight == _weight && pl.Age == _age && pl.Position == _position  );
-            if (player == null) return "Ok";
-            else return "Error";
+            using (context = new Context())
+                return context.Players.FirstOrDefault(pl => pl.Name == _name && pl.Surname == _surname
+                                                      && pl.Height == _height && pl.Weight == _weight
+                                                      && pl.Age == _age && pl.Position == _position); 
         }
 
         public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
@@ -92,14 +92,14 @@ namespace BasketballStatistics.Data
             using (context = new Context())
             {
                 var teams = (from team in context.Teams
-                            select team).ToList();
+                             select team).ToList();
                 foreach (var team in teams)
                 {
                     var wins = 0;
                     var loses = 0;
                     var statistics = (from stat in context.CommandStatistics
-                                     where stat.Team.Name == team.Name
-                                     select stat).ToList();
+                                      where stat.Team.Name == team.Name
+                                      select stat).ToList();
                     foreach (var stats in statistics)
                     {
                         if (stats.Match.Team1 == team)
@@ -126,27 +126,27 @@ namespace BasketballStatistics.Data
             using (context = new Context())
             {
                 var playersStat = (from stat in context.PersonalStatistics
-                                  where stat.Player.Team.Name == _nameOfTeam
-                                  select new PersonalStatisticsViewModel
-                                  {
-                                      Name = stat.Player.Name,
-                                      Surname = stat.Player.Surname,
-                                      Position = stat.Player.Position,
-                                      Points = stat.Points,
-                                      Assists = stat.Assists,
-                                      Rebounds = stat.Rebounds,
-                                      Steals = stat.Steals,
-                                      BlockedShots = stat.BlockedShots,
-                                      ShotsFromGame = stat.ShotsFromGame,
-                                      ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
-                                      ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
-                                      ShotsFromGameFar = stat.ShotsFromGameFar,
-                                      ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
-                                      ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
-                                      FreeThrows = stat.FreeThrows,
-                                      FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
-                                      FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
-                                  }).ToList();
+                                   where stat.Player.Team.Name == _nameOfTeam
+                                   select new PersonalStatisticsViewModel
+                                   {
+                                       Name = stat.Player.Name,
+                                       Surname = stat.Player.Surname,
+                                       Position = stat.Player.Position,
+                                       Points = stat.Points,
+                                       Assists = stat.Assists,
+                                       Rebounds = stat.Rebounds,
+                                       Steals = stat.Steals,
+                                       BlockedShots = stat.BlockedShots,
+                                       ShotsFromGame = stat.ShotsFromGame,
+                                       ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
+                                       ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
+                                       ShotsFromGameFar = stat.ShotsFromGameFar,
+                                       ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
+                                       ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
+                                       FreeThrows = stat.FreeThrows,
+                                       FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
+                                       FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
+                                   }).ToList();
                 return playersStat;
             }
 
@@ -156,10 +156,9 @@ namespace BasketballStatistics.Data
         public string AddTeamInDatabase(string _nameOfTeam)
         {
             var checkIfExists = FindTeam(_nameOfTeam);
+
             if (checkIfExists != null)
-            {
                 return "Error";
-            }
             else
             {
                 using (context = new Context())
@@ -171,10 +170,9 @@ namespace BasketballStatistics.Data
             }
         }
         //Добавление игрока в базу данных. Возврат : Error - игрок уже существует, Ok - все хорошо
-        public string AddPlayerInDatabase(string _name, string _surname, double _height, double _weight, int _age, string _position, string _nameOfTeam)
+        public string AddPlayerInDatabase(string _name, string _surname, double _height, double _weight, int _age, string _position, Team team)
         {
             var position = new Position();
-            var team = FindTeam(_nameOfTeam);
             switch (_position)
             {
                 case "Point Guard":
@@ -193,8 +191,9 @@ namespace BasketballStatistics.Data
                     position = Position.Center;
                     break;
             }
-            var check = FindPlayer(_name, _surname, _height, _weight, _age, position);
-            if (check == "Error") return "Error";
+
+            if (FindPlayer(_name, _surname, _height, _weight, _age, position) != null)
+                return "Error";
             else
             {
                 var _player = new Player { Name = _name, Surname = _surname, Age = _age, Height = _height, Weight = _weight, Position = position, Team = team };
@@ -205,8 +204,6 @@ namespace BasketballStatistics.Data
                 }
                 return "Ok";
             }
-
-
         }
     }
 }

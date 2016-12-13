@@ -22,6 +22,8 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AddTeamWindow : Window
     {
+        Repository _repository = new Repository();
+
         public AddTeamWindow()
         {
             InitializeComponent();
@@ -31,9 +33,16 @@ namespace BasketballStatistics.UI
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            Team team = new Team { Name = txtName.Name };
-            Close();
-            Owner.Focus();
+            // Trying to add a new team to the DB.
+            try
+            {
+                _repository.AddTeamInDatabase(txtName.Text);
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
         }
     }
 }
