@@ -47,6 +47,54 @@ namespace BasketballStatistics.Data
             }
         }
 
+        public RepositoryGame(string team1, string team2, DateTime Date)
+        {
+            using (Context c = new Context())
+            {
+                match = c.Matches.ToList().Find(m => (m.Team1.Name == team1 && m.Team2.Name == team2) || (m.Team1.Name == team2 && m.Team2.Name == team1));
+
+                //stat = c.PersonalStatistics.ToList().FindAll(s => s.Match == match);
+                //statTeam1 = c.CommandStatistics.ToList().Find(s => s.Match==match && s.Team==match.Team1);
+                //statTeam2 = c.CommandStatistics.ToList().Find(s => s.Match == match && s.Team == match.Team2);
+            }
+        }
+
+        public IEnumerable<PersonalStatisticsViewModel> GetPlayersStat()
+        {
+            using (Context c = new Context())
+            {
+                return (from stat in c.PersonalStatistics
+                        where (stat.Match == match)
+                        select new PersonalStatisticsViewModel
+                        {
+                            Name = stat.Player.Name,
+                            Surname = stat.Player.Surname
+                            // надо остальное прописывать?
+                        }
+                        ).ToList();
+            }
+        }
+
+        public IEnumerable<Player> GetTeamList(string team)
+        {
+            using (Context c = new Context())
+            {
+                return c.Players.ToList().FindAll(p => p.Team.Name == team);
+            }
+        }
+
+        public IEnumerable<CommandStatisticsViewModel> GetTeamStat(string team)
+        {
+            using (Context c = new Context())
+            {
+                return (from tStat in c.CommandStatistics
+                        where (tStat.Team.Name == team && tStat.Match == match)
+                        select new CommandStatisticsViewModel()
+                        //здесь тоже все прописывать? 
+                        ).ToList();
+            }
+        }
+
         public void ChangeStat(Player player, StatisticItem statItem , bool f)
         {
             var p = stat.Find(s => s.Player.Name == player.Name && s.Player.Surname == player.Surname);
