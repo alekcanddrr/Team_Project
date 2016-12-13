@@ -27,7 +27,8 @@ namespace BasketballStatistics.Data
                         {
                             FirstTeam = match.Team1.Name,
                             SecondTeam = match.Team2.Name,
-                            Score = match.Team1Score.ToString() + ":" + match.Team2Score.ToString()
+                            Score = match.Team1Score.ToString() + ":" + match.Team2Score.ToString(),
+                            Date = match.Date
                         }).ToList();
         }
 
@@ -47,6 +48,14 @@ namespace BasketballStatistics.Data
                 var result = search.First();
                 return result;
             }
+        }
+        //Определение есть ли уже такой игрок в БД. Error - игрок есть, Ok - все нормально
+        public string FindPlayer(string _name, string _surname, double _height, double _weight, int _age, Position _position)
+        {
+            Player player;
+            using (context = new Context()) player = context.Players.First(pl => pl.Name == _name && pl.Surname == _surname && pl.Height == _height && pl.Weight == _weight && pl.Age == _age && pl.Position == _position  );
+            if (player == null) return "Ok";
+            else return "Error";
         }
 
         public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
@@ -76,6 +85,7 @@ namespace BasketballStatistics.Data
             }
         }
 
+        //Расчет простой статистики команд по победам/поражениям
         public IEnumerable<ShortCommandStatisticsViewModel> ShortStatisticsOfTeams()
         {
             List<ShortCommandStatisticsViewModel> result = new List<ShortCommandStatisticsViewModel>();
@@ -110,6 +120,7 @@ namespace BasketballStatistics.Data
             }
         }
 
+        //Расчет персональных статистик игроков определенной команды в определенном матче (нужно в окне AllGames)
         public IEnumerable<PersonalStatisticsViewModel> StatisticsOfPlayersOfTeam(Match match, string _nameOfTeam)
         {
             using (context = new Context())
@@ -138,6 +149,63 @@ namespace BasketballStatistics.Data
                                   }).ToList();
                 return playersStat;
             }
+
+        }
+
+        // Добавление команды в базу. Возврат : Error - команда уже существует, Ok - все хорошо
+        public string AddTeamInDatabase(string _nameOfTeam)
+        {
+            var checkIfExists = FindTeam(_nameOfTeam);
+            if (checkIfExists != null)
+            {
+                return "Error";
+            }
+            else
+            {
+                using (context = new Context())
+                {
+                    context.Teams.Add(new Team { Name = _nameOfTeam });
+                    context.SaveChanges();
+                }
+                return "Ok";
+            }
+        }
+        //Добавление игрока в базу данных. Возврат : Error - игрок уже существует, Ok - все хорошо
+        public string AddPlayerInDatabase(string _name, string _surname, double _height, double _weight, int _age, string _position, string _nameOfTeam)
+        {
+            var position = new Position();
+            var team = FindTeam(_nameOfTeam);
+            switch (_position)
+            {
+                case "Point Guard":
+                    position = Position.PointGuard;
+                    break;
+                case "Shooting Guard":
+                    position = Position.ShootingGuard;
+                    break;
+                case "Small Forward":
+                    position = Position.SmallForward;
+                    break;
+                case "Power Forward":
+                    position = Position.PowerForward;
+                    break;
+                case "Center":
+                    position = Position.Center;
+                    break;
+            }
+            var check = FindPlayer(_name, _surname, _height, _weight, _age, position);
+            if (check == "Error") return "Error";
+            else
+            {
+                var _player = new Player { Name = _name, Surname = _surname, Age = _age, Height = _height, Weight = _weight, Position = position, Team = team };
+                using (context = new Context())
+                {
+                    context.Players.Add(_player);
+                    context.SaveChanges();
+                }
+                return "Ok";
+            }
+
 
         }
     }

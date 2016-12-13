@@ -11,5 +11,6 @@ namespace BasketballStatistics.Data
         public string FirstTeam { get; set; }
         public string SecondTeam { get; set; }
         public string Score { get; set; }
+        public DateTime Date { get; set; }
     }
 }
