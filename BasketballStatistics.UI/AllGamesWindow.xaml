@@ -23,7 +23,7 @@
 
         <DockPanel Grid.Row="1" Margin="0 0 5 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of all games:</Label>
-            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged" MouseDoubleClick="gamesList_MouseDoubleClick" Loaded="gameList_loaded">
+            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged" MouseDoubleClick="gamesList_MouseDoubleClick">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Team №1" Width="115">
@@ -45,11 +45,12 @@
                 </ListView.View>
             </ListView>
         </DockPanel>
+        <Label Name="gamesLoadingLabel" Grid.Row="1" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18">Loading all games...</Label>
         <Button Name="btnGameInfo" Grid.Row="2" VerticalAlignment="Center" Width="100" Background="LightCoral" FontSize="15" IsEnabled="False" Click="btnGameInfo_Click">Show info</Button>
 
         <DockPanel Grid.Row="1" Grid.Column="1" Margin="5 0 0 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of teams:</Label>
-            <ListView Name="teamsList" FontSize="15" Loaded="teamsList_loaded">
+            <ListView Name="teamsList" FontSize="15">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Team name" Width="150">
@@ -65,6 +66,7 @@
                 </ListView.View>
             </ListView>
         </DockPanel>
+        <Label Name="teamsLoadingLabel" Grid.Row="1" Grid.Column="1" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18">Loading all teams...</Label>
         <Button Name="btnReturn" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="100" Background="LightCoral" FontSize="15" Click="btnReturn_Click">Return</Button>
     </Grid>
 </Window>

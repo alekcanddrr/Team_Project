@@ -21,13 +21,31 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AllGamesWindow : Window
     {
-        Repository repo = new Repository();
+        Repository _repository = new Repository();
+
         public AllGamesWindow()
         {
             InitializeComponent();
             // To make focus on the owner window (MainWindow).
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
 
+            FillTables();
+        }
+
+        private void FillTables()
+        {
+            // Parallel loading games and teams from the repository. Then making invisible the labels from the main thread.
+            var gameLoadingTask = Task.Run(() => Dispatcher.Invoke(() =>
+            {
+                gamesList.ItemsSource = _repository.AllMatchesData();
+            }));
+            gameLoadingTask.ContinueWith(t => Dispatcher.Invoke(() => gamesLoadingLabel.Visibility = Visibility.Hidden));
+
+            var teamLoadingTask = Task.Run(() => Dispatcher.Invoke(() =>
+            {
+                teamsList.ItemsSource = _repository.ShortStatisticsOfTeams();
+            }));
+            teamLoadingTask.ContinueWith(t => Dispatcher.Invoke(() => teamsLoadingLabel.Visibility = Visibility.Hidden));
         }
 
         private void btnGameInfo_Click(object sender, RoutedEventArgs e)
@@ -50,18 +68,6 @@ namespace BasketballStatistics.UI
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void gameList_loaded(object sender, RoutedEventArgs e)
-        {
-            var _allMatches = repo.AllMatchesData();
-            gamesList.ItemsSource = _allMatches;
-        }
-
-        private void teamsList_loaded(object sender, RoutedEventArgs e)
-        {
-            var _allTeams = repo.ShortStatisticsOfTeams();
-            teamsList.ItemsSource = _allTeams;
         }
     }
 }
