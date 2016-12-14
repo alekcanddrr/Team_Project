@@ -64,7 +64,7 @@ namespace BasketballStatistics.UI
                 var position = comboBoxPosition.SelectionBoxItem.ToString();
                 
                 // Adding to the DB.
-                _repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, age, position, team);
+                //_repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, age, position, team);
                 Close();
             }
             catch (Exception ex)

@@ -46,29 +46,29 @@ namespace BasketballStatistics.Data.Migrations
 
             players.AddRange(new[]
             {
-                new Player {Name = "Mo", Surname = "Williams",Height = 180, Weight = 100, Age = 18, Position = Position.PointGuard, Team = teams[0]  },
-                new Player {Name = "Dan", Surname = "Hickson",Height = 200, Weight = 110, Age = 25, Position = Position.PowerForward, Team = teams[0]  },
-                new Player {Name = "Timofey", Surname = "Mozgov",Height = 225, Weight = 115, Age = 20, Position = Position.Center, Team = teams[0]  },
-                new Player {Name = "Andrey", Surname = "Fillipov",Height = 195, Weight = 76, Age = 19, Position = Position.ShootingGuard, Team = teams[0]  },
-                new Player {Name = "Lebron", Surname = "James",Height = 203, Weight = 100, Age = 32, Position = Position.SmallForward, Team = teams[0]  },
-                new Player {Name = "Tristan", Surname = "Tompson",Height = 210, Weight = 120, Age = 25, Position = Position.Center, Team = teams[0]  },
-                new Player {Name = "Mathew", Surname = "Dellavedova",Height = 176, Weight =71, Age = 21, Position = Position.PointGuard, Team = teams[0]  },
+                new Player {Name = "Mo", Surname = "Williams",Height = 180, Weight = 100, BirthDate = new DateTime(1980, 5,4), Position = Position.PointGuard, Team = teams[0]  },
+                new Player {Name = "Dan", Surname = "Hickson",Height = 200, Weight = 110, BirthDate = new DateTime(1989, 3,1), Position = Position.PowerForward, Team = teams[0]  },
+                new Player {Name = "Timofey", Surname = "Mozgov",Height = 225, Weight = 115, BirthDate = new DateTime(1990, 3,2), Position = Position.Center, Team = teams[0]  },
+                new Player {Name = "Andrey", Surname = "Fillipov",Height = 195, Weight = 76, BirthDate = new DateTime(1995, 5,22), Position = Position.ShootingGuard, Team = teams[0]  },
+                new Player {Name = "Lebron", Surname = "James",Height = 203, Weight = 100, BirthDate = new DateTime(1984,12,28), Position = Position.SmallForward, Team = teams[0]  },
+                new Player {Name = "Tristan", Surname = "Tompson",Height = 210, Weight = 120,BirthDate = new DateTime(1999, 6,12), Position = Position.Center, Team = teams[0]  },
+                new Player {Name = "Mathew", Surname = "Dellavedova",Height = 176, Weight =71, BirthDate = new DateTime(1997, 11,29), Position = Position.PointGuard, Team = teams[0]  },
 
-                new Player {Name = "Wilcom", Surname = "Jackson",Height = 190, Weight = 80, Age = 45, Position = Position.PointGuard, Team = teams[1]  },
-                new Player {Name = "Nicolai", Surname = "Tolstoi",Height = 196, Weight = 89, Age = 32, Position = Position.PowerForward, Team = teams[1]  },
-                new Player {Name = "Andrew", Surname = "Ribakov",Height = 240, Weight = 145, Age = 20, Position = Position.Center, Team = teams[1]  },
-                new Player {Name = "JR", Surname = "Smith",Height = 199, Weight = 82, Age = 34, Position = Position.ShootingGuard, Team = teams[1]  },
-                new Player {Name = "Carmelo", Surname = "Anthony",Height = 204, Weight = 105, Age = 37, Position = Position.SmallForward, Team = teams[1]  },
-                new Player {Name = "Jidrunas", Surname = "Ilgauskas",Height = 224, Weight = 127, Age = 36, Position = Position.Center, Team = teams[1]  },
-                new Player {Name = "Derreck", Surname = "Rose",Height = 192, Weight =76, Age = 29, Position = Position.PointGuard, Team = teams[1]  },
+                new Player {Name = "Wilcom", Surname = "Jackson",Height = 190, Weight = 80, BirthDate = new DateTime(1993, 1,2), Position = Position.PointGuard, Team = teams[1]  },
+                new Player {Name = "Nicolai", Surname = "Tolstoi",Height = 196, Weight = 89, BirthDate = new DateTime(1993, 12,26), Position = Position.PowerForward, Team = teams[1]  },
+                new Player {Name = "Andrew", Surname = "Ribakov",Height = 240, Weight = 145, BirthDate = new DateTime(1992, 5,2), Position = Position.Center, Team = teams[1]  },
+                new Player {Name = "JR", Surname = "Smith",Height = 199, Weight = 82, BirthDate = new DateTime(1992, 7,24), Position = Position.ShootingGuard, Team = teams[1]  },
+                new Player {Name = "Carmelo", Surname = "Anthony",Height = 204, Weight = 105, BirthDate = new DateTime(1999, 3,25), Position = Position.SmallForward, Team = teams[1]  },
+                new Player {Name = "Jidrunas", Surname = "Ilgauskas",Height = 224, Weight = 127, BirthDate = new DateTime(1998, 1,14), Position = Position.Center, Team = teams[1]  },
+                new Player {Name = "Derreck", Surname = "Rose",Height = 192, Weight =76, BirthDate = new DateTime(1993, 11,19), Position = Position.PointGuard, Team = teams[1]  },
 
-                new Player {Name = "Leonard", Surname = "Smith",Height = 192, Weight = 95, Age = 20, Position = Position.PointGuard, Team = teams[2]  },
-                new Player {Name = "Chris", Surname = "Bosh",Height = 214, Weight = 100, Age = 35, Position = Position.PowerForward, Team = teams[2]  },
-                new Player {Name = "Ilya", Surname = "Smolyakov",Height = 237, Weight = 130, Age = 25, Position = Position.Center, Team = teams[2]  },
-                new Player {Name = "Dwyane", Surname = "Wade",Height = 198, Weight = 88, Age = 33, Position = Position.ShootingGuard, Team = teams[2]  },
-                new Player {Name = "Boris", Surname = "Brown",Height = 201, Weight = 100, Age = 32, Position = Position.SmallForward, Team = teams[2]  },
-                new Player {Name = "Donald", Surname = "Trump",Height = 182, Weight = 89, Age = 72, Position = Position.Center, Team = teams[2]  },
-                new Player {Name = "Stephen", Surname = "Curry",Height = 176, Weight =71, Age = 21, Position = Position.PointGuard, Team = teams[2]  }
+                new Player {Name = "Leonard", Surname = "Smith",Height = 192, Weight = 95, BirthDate = new DateTime(1997, 1,1), Position = Position.PointGuard, Team = teams[2]  },
+                new Player {Name = "Chris", Surname = "Bosh",Height = 214, Weight = 100, BirthDate = new DateTime(1996, 1,1), Position = Position.PowerForward, Team = teams[2]  },
+                new Player {Name = "Ilya", Surname = "Smolyakov",Height = 237, Weight = 130, BirthDate = new DateTime(1992, 12,2), Position = Position.Center, Team = teams[2]  },
+                new Player {Name = "Dwyane", Surname = "Wade",Height = 198, Weight = 88, BirthDate = new DateTime(1997, 10,14), Position = Position.ShootingGuard, Team = teams[2]  },
+                new Player {Name = "Boris", Surname = "Brown",Height = 201, Weight = 100, BirthDate = new DateTime(1993, 11,24), Position = Position.SmallForward, Team = teams[2]  },
+                new Player {Name = "Donald", Surname = "Trump",Height = 182, Weight = 89, BirthDate = new DateTime(1982, 3,28), Position = Position.Center, Team = teams[2]  },
+                new Player {Name = "Stephen", Surname = "Curry",Height = 176, Weight =71, BirthDate = new DateTime(1992, 7,6), Position = Position.PointGuard, Team = teams[2]  }
             });
             foreach (var player in players)
             {

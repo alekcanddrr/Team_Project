@@ -50,12 +50,12 @@ namespace BasketballStatistics.Data
             }
         }
         //Определение есть ли уже такой игрок в БД. Error - игрок есть, Ok - все нормально
-        public Player FindPlayer(string _name, string _surname, double _height, double _weight, int _age, Position _position)
+        public Player FindPlayer(string name, string surname, double height, double weight, DateTime birthdate, Position position)
         {
             using (context = new Context())
-                return context.Players.FirstOrDefault(pl => pl.Name == _name && pl.Surname == _surname
-                                                      && pl.Height == _height && pl.Weight == _weight
-                                                      && pl.Age == _age && pl.Position == _position); 
+                return context.Players.FirstOrDefault(pl => pl.Name == name && pl.Surname == surname
+                                                      && pl.Height == height && pl.Weight == weight
+                                                      && pl.BirthDate == birthdate && pl.Position == position); 
         }
 
         public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
@@ -121,17 +121,18 @@ namespace BasketballStatistics.Data
         }
 
         //Расчет персональных статистик игроков определенной команды в определенном матче (нужно в окне AllGames)
-        public IEnumerable<PersonalStatisticsViewModel> StatisticsOfPlayersOfTeam(Match match, string _nameOfTeam)
+        public IEnumerable<PersonalStatisticsViewModel> StatisticsOfPlayersOfTeam(Match match, string nameOfTeam)
         {
             using (context = new Context())
             {
                 var playersStat = (from stat in context.PersonalStatistics
-                                   where stat.Player.Team.Name == _nameOfTeam
+                                   where stat.Player.Team.Name == nameOfTeam
                                    select new PersonalStatisticsViewModel
                                    {
                                        Name = stat.Player.Name,
                                        Surname = stat.Player.Surname,
-                                       Position = stat.Player.Position,
+                                       Position = stat.Player.Position.ToString(),
+                                       Age = ((int)(DateTime.Now - stat.Player.BirthDate).TotalDays) / 365,
                                        Points = stat.Points,
                                        Assists = stat.Assists,
                                        Rebounds = stat.Rebounds,
@@ -152,57 +153,64 @@ namespace BasketballStatistics.Data
 
         }
 
-        // Добавление команды в базу. Возврат : Error - команда уже существует, Ok - все хорошо
-        public string AddTeamInDatabase(string _nameOfTeam)
+        // Добавление команды в базу. Возврат : Exception - команда уже существует
+        public Team AddTeamInDatabase(string nameOfTeam)
         {
-            var checkIfExists = FindTeam(_nameOfTeam);
+            var checkIfExists = FindTeam(nameOfTeam);
 
             if (checkIfExists != null)
-                return "Error";
+                throw new ArgumentException("Team with this name already exists!");
             else
             {
                 using (context = new Context())
                 {
-                    context.Teams.Add(new Team { Name = _nameOfTeam });
+                    var team = new Team { Name = nameOfTeam };
+                    context.Teams.Add(team);
                     context.SaveChanges();
+                    return team;
                 }
-                return "Ok";
             }
         }
-        //Добавление игрока в базу данных. Возврат : Error - игрок уже существует, Ok - все хорошо
-        public string AddPlayerInDatabase(string _name, string _surname, double _height, double _weight, int _age, string _position, Team team)
+        //Добавление игрока в базу данных. Возврат : Exception- игрок уже существует
+        public void AddPlayerInDatabase(string name, string surname, double height, double weight, DateTime birthdate, string position, Team team)
         {
-            var position = new Position();
-            switch (_position)
+            var positionEnum = new Position();
+            switch (position)
             {
                 case "Point Guard":
-                    position = Position.PointGuard;
+                    positionEnum = Position.PointGuard;
                     break;
                 case "Shooting Guard":
-                    position = Position.ShootingGuard;
+                    positionEnum = Position.ShootingGuard;
                     break;
                 case "Small Forward":
-                    position = Position.SmallForward;
+                    positionEnum = Position.SmallForward;
                     break;
                 case "Power Forward":
-                    position = Position.PowerForward;
+                    positionEnum = Position.PowerForward;
                     break;
                 case "Center":
-                    position = Position.Center;
+                    positionEnum = Position.Center;
                     break;
             }
 
-            if (FindPlayer(_name, _surname, _height, _weight, _age, position) != null)
-                return "Error";
+            if (FindPlayer(name, surname, height, weight, birthdate, positionEnum) != null)
+                throw new ArgumentException("This player alredy exists!");
             else
             {
-                var _player = new Player { Name = _name, Surname = _surname, Age = _age, Height = _height, Weight = _weight, Position = position, Team = team };
+                var player = new Player { Name = name, Surname = surname, BirthDate = birthdate, Height = height, Weight = weight, Position = positionEnum, Team = team };
                 using (context = new Context())
                 {
-                    context.Players.Add(_player);
+                    context.Players.Add(player);
                     context.SaveChanges();
                 }
-                return "Ok";
+            }
+        }
+        public void AddCoachInDatabase(string name, string surname, Team team)
+        {
+            using (context = new Context())
+            {
+                context.Coaches.Add(new Coach { Name = name, Surname = surname, Team = team });
             }
         }
     }

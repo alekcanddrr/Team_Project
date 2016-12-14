@@ -59,22 +59,6 @@ namespace BasketballStatistics.Data
             }
         }
 
-        public IEnumerable<PersonalStatisticsViewModel> GetPlayersStat()
-        {
-            using (Context c = new Context())
-            {
-                return (from stat in c.PersonalStatistics
-                        where (stat.Match == match)
-                        select new PersonalStatisticsViewModel
-                        {
-                            Name = stat.Player.Name,
-                            Surname = stat.Player.Surname
-                            // надо остальное прописывать?
-                        }
-                        ).ToList();
-            }
-        }
-
         public IEnumerable<Player> GetTeamList(string team)
         {
             using (Context c = new Context())
@@ -83,17 +67,6 @@ namespace BasketballStatistics.Data
             }
         }
 
-        public IEnumerable<CommandStatisticsViewModel> GetTeamStat(string team)
-        {
-            using (Context c = new Context())
-            {
-                return (from tStat in c.CommandStatistics
-                        where (tStat.Team.Name == team && tStat.Match == match)
-                        select new CommandStatisticsViewModel()
-                        //здесь тоже все прописывать? 
-                        ).ToList();
-            }
-        }
 
         public void ChangeStat(Player player, StatisticItem statItem , bool f)
         {

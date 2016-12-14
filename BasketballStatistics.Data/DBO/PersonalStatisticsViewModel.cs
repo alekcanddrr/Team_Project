@@ -10,7 +10,8 @@ namespace BasketballStatistics.Data
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public Position Position { get; set; }
+        public string Position { get; set; }
+        public int Age { get; set; }
         public int Points { get; set; }
         public int Assists { get; set; }
         public int Rebounds { get; set; }
