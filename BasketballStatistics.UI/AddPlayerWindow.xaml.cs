@@ -22,6 +22,7 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AddPlayerWindow : Window
     {
+        DateTime? SelectedDate;
         Repository _repository = new Repository();
         public AddPlayerWindow()
         {
@@ -45,17 +46,21 @@ namespace BasketballStatistics.UI
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            int age;
+            string name, surname;
             double height, weight;
 
             try
             {
                 // Checking if input values are valid.
-                if (!int.TryParse(txtAge.Text, out age))
-                    throw new ArgumentException("Incorrect format of age! It must be a positive, integer value.");
-                if (!double.TryParse(txtHeight.Text, out height))
+                name = txtName.Text;
+                surname = txtSurname.Text;
+                if (String.IsNullOrWhiteSpace(name))
+                    throw new ArgumentException("Name cannot be null or whitespaces");
+                if (String.IsNullOrWhiteSpace(surname))
+                    throw new ArgumentException("Surname cannot be null or whitespaces");
+                if (!double.TryParse(txtHeight.Text, out height) || height <= 0)
                     throw new ArgumentException("Inccorect format of height! It must be a positive, numeric value.");
-                if (!double.TryParse(txtWeight.Text, out weight))
+                if (!double.TryParse(txtWeight.Text, out weight) || weight <= 0)
                     throw new ArgumentException("Incorrect format of weight! It must be a positive, numeric value.");
 
                 var team = comboBoxTeam.SelectedItem as Team;
@@ -64,10 +69,22 @@ namespace BasketballStatistics.UI
                 var position = comboBoxPosition.SelectionBoxItem.ToString();
                 
                 // Adding to the DB.
-                //_repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, age, position, team);
+                _repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, (DateTime)SelectedDate, position, team);
                 Close();
             }
             catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+
+        private void BirthDatePickers_date_changed(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                SelectedDate = BirthDatePicker.SelectedDate;
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message);
             }

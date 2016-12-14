@@ -34,8 +34,7 @@
         <Label Grid.Row="2" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Surname:</Label>
         <TextBox Name="txtSurname" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
 
-        <Label Grid.Row="3" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Age:</Label>
-        <TextBox Name="txtAge" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+        <Label Grid.Row="3" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">BirthDate:</Label>
 
         <Label Grid.Row="4" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Height:</Label>
         <TextBox Name="txtHeight" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
@@ -68,5 +67,6 @@
         </ComboBox>
 
         <Button Name="btnAdd" Grid.ColumnSpan="2" Grid.Row="8" FontSize="15" Padding="3" Margin="0 5 0 0"  Width="160" Background="LightGreen" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAdd_Click">Add</Button>
+        <DatePicker Name="BirthDatePicker" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="10,10,0,0" Grid.Row="3" Width="276" Height="28" FontSize="16" SelectedDateChanged="BirthDatePickers_date_changed"/>
     </Grid>
 </Window>
