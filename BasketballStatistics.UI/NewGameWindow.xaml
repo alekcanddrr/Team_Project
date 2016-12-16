@@ -14,5 +14,10 @@
             <Label FontSize="20">Here is a new game</Label>
             <Button Name="btnSave" Width="100" Margin="0 5 0 0" Padding="4" Background="LightCoral" Click="btnSave_Click">Save</Button>
         </StackPanel>
+        
+        <Button Name="btnStart" Content="Start" HorizontalAlignment="Left" Height="37" Margin="132,82,0,0" VerticalAlignment="Top" Width="49" Click="btnStart_Click"/>
+        <Button Name="btnStop" Content="Stop" HorizontalAlignment="Left" Height="37" Margin="200,82,0,0" VerticalAlignment="Top" Width="49" Click="btnStop_Click"/>
+        <TextBlock Name="txtTime" HorizontalAlignment="Left" Height="29" Margin="156,32,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top" Width="103" TextAlignment="Center"/>
+        <TextBlock Name="txtQuarter" HorizontalAlignment="Left" Height="27" Margin="123,50,0,0" TextWrapping="Wrap" Text="Quarter" VerticalAlignment="Top" Width="83" TextAlignment="Center"/>
     </Grid>
 </Window>
