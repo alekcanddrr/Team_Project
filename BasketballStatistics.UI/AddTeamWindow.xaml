@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
-        Title="New team" Width="400" Height="160"
+        Title="New team" Width="400" Height="260"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
         Icon="Img/basketball.ico">
@@ -17,12 +17,24 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition Height="0.8*"/>
+            <RowDefinition/>
+            <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
         <Label Grid.ColumnSpan="2" FontSize="18" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontWeight="Thin">Add a new team</Label>
         <Label FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right" Grid.Row="1">Team name:</Label>
         <TextBox Name="txtName" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
-        <Button Name="btnAdd" Grid.ColumnSpan="2" Grid.Row="2" FontSize="15" Padding="3" Margin="0 5 0 0"  Width="160" Background="LightGreen" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAdd_Click">Add</Button>
+
+        <Label Grid.ColumnSpan="2" Grid.Row="2" FontSize="17" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontWeight="Thin">Team's coach:</Label>
+
+        <Label FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right" Grid.Row="3">Coach name:</Label>
+        <TextBox Name="txtCoachName" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Label FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right" Grid.Row="4">Coach surname:</Label>
+        <TextBox Name="txtCoachSurName" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
+
+        <Button Name="btnAdd" Grid.ColumnSpan="2" Grid.Row="5" FontSize="15" Padding="3"  Width="160" Background="LightGreen" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAdd_Click">Add</Button>
     </Grid>
 </Window>
