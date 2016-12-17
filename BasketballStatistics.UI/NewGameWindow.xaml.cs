@@ -27,9 +27,12 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class NewGameWindow : Window
     {
-        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1)};
+        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        private DispatcherTimer TimeOut = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         private DateTime StartTime;
-        private TimeSpan Timer = TimeSpan.FromMinutes(1);
+        private TimeSpan TimerGame = TimeSpan.FromMinutes(10);
+        private DateTime StartTimeOut = DateTime.Now;
+        private TimeSpan TimerTimeOut = TimeSpan.FromMinutes(1);
         private DateTime PauseTime;
         private int Quarter = 1;
         private bool play;
@@ -38,6 +41,7 @@ namespace BasketballStatistics.UI
         {
             InitializeComponent();
             GameTime.Tick += TimeTick;
+            TimeOut.Tick += TimeOutTimer_Tick;
 
             MessageBox.Show(team1.Name + " " + team2.Name);
         }
@@ -49,7 +53,6 @@ namespace BasketballStatistics.UI
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            
             if (!play)
                 TimerStart();
             else
@@ -61,16 +64,17 @@ namespace BasketballStatistics.UI
 
         private void TimeTick(object sender, EventArgs e)
         {
-            TimeSpan TimeLeft = Timer - (DateTime.Now - StartTime);
+            TimeSpan TimeLeft = TimerGame - (DateTime.Now - StartTime);
             if (TimeLeft <= TimeSpan.Zero)
                 TimerStop();
             else
-            txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
+                txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
         }
- 
+
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             btnStop.IsEnabled = false;
+            btnStart.IsEnabled = true;
             TimerPause();
         }
 
@@ -89,8 +93,8 @@ namespace BasketballStatistics.UI
                 btnStart.IsEnabled = true;
                 Quarter++;
                 txtQuarter.Text = Quarter.ToString();
-                Timer = TimeSpan.FromMinutes(10);
-                txtTime.Text = Timer.Minutes + ":" + Timer.Seconds;
+                TimerGame = TimeSpan.FromMinutes(10);
+                txtTime.Text = TimerGame.Minutes + ":" + TimerGame.Seconds;
             }
             else
                 GameOver();
@@ -100,7 +104,6 @@ namespace BasketballStatistics.UI
         {
             GameTime.Stop();
             PauseTime = DateTime.Now;
-            btnStart.IsEnabled = true;
         }
 
         private void TimerStart()
@@ -115,6 +118,34 @@ namespace BasketballStatistics.UI
         {
             MessageBox.Show("Game over!");
             Close();
+        }
+
+        private void TimeOutTimer()
+        {
+            TimerPause();
+
+            StartTimeOut = DateTime.Now;
+            TimerTimeOut = TimeSpan.FromMinutes(1);
+
+         //   btnStart.IsEnabled = false;
+         //   btnStop.IsEnabled = false;
+
+            TimeOut.Start();
+
+        }
+
+        private void TimeOutTimer_Tick(object sender, EventArgs e)
+        {
+            TimeSpan TimeLeft = TimerTimeOut - (DateTime.Now - StartTimeOut);
+            if (TimeLeft <= TimeSpan.Zero)
+            {
+                TimeOut.Stop();
+                btnStart.IsEnabled = true;
+                TimeLeft = TimerGame - (DateTime.Now - StartTime);
+                txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
+            }
+            else
+                txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
         }
     }
 }
