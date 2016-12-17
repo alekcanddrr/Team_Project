@@ -27,7 +27,7 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class NewGameWindow : Window
     {
-        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10)};
+        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1)};
         private DateTime StartTime;
         private TimeSpan Timer = TimeSpan.FromMinutes(1);
         private DateTime PauseTime;
@@ -39,7 +39,8 @@ namespace BasketballStatistics.UI
             InitializeComponent();
             GameTime.Tick += TimeTick;
 
-            MessageBox.Show(team1.Name + " " + team2.Name);
+            txtFirstTeam.Text = team1.Name;
+            txtSecondTeam.Text = team2.Name;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
