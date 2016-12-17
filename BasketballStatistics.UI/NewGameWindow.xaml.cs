@@ -43,7 +43,8 @@ namespace BasketballStatistics.UI
             GameTime.Tick += TimeTick;
             TimeOut.Tick += TimeOutTimer_Tick;
 
-            MessageBox.Show(team1.Name + " " + team2.Name);
+            txtFirstTeam.Text = team1.Name;
+            txtSecondTeam.Text = team2.Name;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

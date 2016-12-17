@@ -6,18 +6,48 @@
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
         Icon="Img/basketball.ico"
-        Title="Game" Height="400" Width="500"
+        Title="Game" Height="800" Width="800"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2.5*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.RowSpan="2" Grid.ColumnSpan="3">
             <Label FontSize="20">Here is a new game</Label>
             <Button Name="btnSave" Width="100" Margin="0 5 0 0" Padding="4" Background="LightCoral" Click="btnSave_Click">Save</Button>
         </StackPanel>
-        
-        <Button Name="btnStart" Content="Start" HorizontalAlignment="Left" Height="37" Margin="132,82,0,0" VerticalAlignment="Top" Width="49" Click="btnStart_Click"/>
-        <Button Name="btnStop" Content="Stop" HorizontalAlignment="Left" Height="37" Margin="200,82,0,0" VerticalAlignment="Top" Width="49" Click="btnStop_Click"/>
-        <TextBlock Name="txtTime" HorizontalAlignment="Left" Height="29" Margin="156,32,0,0" TextWrapping="Wrap" Text="Time" VerticalAlignment="Top" Width="103" TextAlignment="Center"/>
-        <TextBlock Name="txtQuarter" HorizontalAlignment="Left" Height="27" Margin="123,50,0,0" TextWrapping="Wrap" Text="Quarter" VerticalAlignment="Top" Width="83" TextAlignment="Center"/>
+
+        <StackPanel VerticalAlignment="Center">
+            <Label FontSize="24" FontWeight="Light" HorizontalContentAlignment="Center">Team 1:</Label>
+            <TextBlock Name="txtFirstTeam" FontSize="30" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextDecorations="Underline">1 team name</TextBlock>
+            <TextBlock Margin="0 10 0 0" Name="txtFirstTeamCoach" FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Coach name</TextBlock>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <TextBlock Name="txtTime" FontSize="34" FontWeight="Thin" TextWrapping="Wrap" TextAlignment="Center">Time</TextBlock>
+            <TextBlock Name="txtQuarter" FontSize="20" FontWeight="Light" TextWrapping="Wrap" TextAlignment="Center">Quarter</TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 5">
+                <Button Name="btnStart" FontSize="16" Padding="8 4 8 4" Margin="0 0 5 0" Background="LightGreen" Click="btnStart_Click">Start time</Button>
+                <Button Name="btnStop" FontSize="16" Padding="8 4 8 4" Margin="5 0 0 0" Background="LightCoral" Click="btnStop_Click">Stop time</Button>
+            </StackPanel>
+            <Button Name="btnFirstTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Margin="0 5 0 5" Background="LightGray">1 team timeout</Button>
+            <Button Name="btnSecondTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Background="LightGray">2 team timeout</Button>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+            <Label FontSize="24" FontWeight="Light" HorizontalContentAlignment="Center">Team 2:</Label>
+            <TextBlock Name="txtSecondTeam" FontSize="30" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextDecorations="Underline">2 team name</TextBlock>
+            <TextBlock Margin="0 10 0 0 " Name="txtSecondTeamCoach" FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Coach name</TextBlock>
+        </StackPanel>
     </Grid>
 </Window>

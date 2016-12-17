@@ -19,6 +19,15 @@ namespace BasketballStatistics.Data
             }
         }
 
+        public IEnumerable<Player> AllPlayers
+        {
+            get
+            {
+                using (context = new Context())
+                    return context.Players.ToList();
+            }
+        }
+
         public IEnumerable<MatchViewModel> AllMatchesData()
         {
             using (context = new Context())
@@ -42,14 +51,13 @@ namespace BasketballStatistics.Data
         {
             using (context = new Context())
             {
-                var search = from match in context.Matches
-                             where (match.Team1.Name == firstTeam && match.Team2.Name == secondTeam && match.Team1Score == int.Parse(finalScore.Split(':')[0]) && match.Team2Score == int.Parse(finalScore.Split(':')[1]))
-                             select match;
-                var result = search.First();
-                return result;
+                return context.Matches.First(match =>
+                    match.Team1.Name == firstTeam && match.Team2.Name == secondTeam
+                    && match.Team1Score == int.Parse(finalScore.Split(':')[0])
+                    && match.Team2Score == int.Parse(finalScore.Split(':')[1]));
             }
         }
-        //Определение есть ли уже такой игрок в БД. Error - игрок есть, Ok - все нормально
+
         public Player FindPlayer(string name, string surname, double height, double weight, DateTime birthdate, Position position)
         {
             using (context = new Context())
@@ -57,66 +65,66 @@ namespace BasketballStatistics.Data
                                                       && pl.Height == height && pl.Weight == weight
                                                       && pl.BirthDate == birthdate && pl.Position == position);
         }
+        public string FindCoach(Team team)
+        {
+            using (context = new Context())
+            {
+                var coach = (context.Coaches.Where(c => c.Team.Id == team.Id)).First();
+                return coach.Name + " " + coach.Surname;
+            }
+        }
 
         public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
         {
             using (context = new Context())
-            {
-                var result = from stat in context.CommandStatistics
-                             where (stat.Match == match) && (stat.Match.Team1.Name == nameOfTeam || stat.Match.Team2.Name == nameOfTeam)
-                             select new CommandStatisticsViewModel
-                             {
-                                 Points = stat.Points,
-                                 Assists = stat.Assists,
-                                 Rebounds = stat.Rebounds,
-                                 Steals = stat.Steals,
-                                 BlockedShots = stat.BlockedShots,
-                                 ShotsFromGame = stat.ShotsFromGame,
-                                 ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
-                                 ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
-                                 ShotsFromGameFar = stat.ShotsFromGameFar,
-                                 ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
-                                 ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
-                                 FreeThrows = stat.FreeThrows,
-                                 FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
-                                 FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
-                             };
-                return result.First();
-            }
+                return (from stat in context.CommandStatistics
+                        where (stat.Match == match) && (stat.Match.Team1.Name == nameOfTeam || stat.Match.Team2.Name == nameOfTeam)
+                        select new CommandStatisticsViewModel
+                        {
+                            Points = stat.Points,
+                            Assists = stat.Assists,
+                            Rebounds = stat.Rebounds,
+                            Steals = stat.Steals,
+                            BlockedShots = stat.BlockedShots,
+                            ShotsFromGame = stat.ShotsFromGame,
+                            ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
+                            ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
+                            ShotsFromGameFar = stat.ShotsFromGameFar,
+                            ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
+                            ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
+                            FreeThrows = stat.FreeThrows,
+                            FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
+                            FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
+                        }).First();
         }
 
         //Расчет простой статистики команд по победам/поражениям
         public IEnumerable<ShortCommandStatisticsViewModel> ShortStatisticsOfTeams()
         {
-            List<ShortCommandStatisticsViewModel> result = new List<ShortCommandStatisticsViewModel>();
             using (context = new Context())
             {
-                var teams = (from team in context.Teams
-                             select team).ToList();
-                foreach (var team in teams)
+                var winners = context.Matches.Select(match => new
                 {
-                    var wins = 0;
-                    var loses = 0;
-                    var statistics = (from stat in context.CommandStatistics
-                                      where stat.Team.Name == team.Name
-                                      select stat).ToList();
-                    foreach (var stats in statistics)
-                    {
-                        if (stats.Match.Team1 == team)
+                    Team = match.Team1Score > match.Team2Score ? match.Team1 : match.Team2,
+                    Win = 1,
+                    Lose = 0
+                });
+                var losers = context.Matches.Select(match => new
+                {
+                    Team = match.Team1Score > match.Team2Score ? match.Team2 : match.Team1,
+                    Win = 0,
+                    Lose = 1
+                });
+
+                return (from t in winners.Concat(losers)
+                        group t by t.Team into g
+                        orderby g.Key.Name
+                        select new ShortCommandStatisticsViewModel
                         {
-                            if (stats.Match.Team1Score > stats.Match.Team2Score) wins++;
-                            else loses++;
-                        }
-                        else
-                            if (stats.Match.Team2 == team)
-                        {
-                            if (stats.Match.Team1Score > stats.Match.Team2Score) loses++;
-                            else wins++;
-                        }
-                    }
-                    result.Add(new ShortCommandStatisticsViewModel { Name = team.Name, Wins = wins, Loses = loses });
-                }
-                return result;
+                            Name = g.Key.Name,
+                            Wins = g.Sum(result => result.Win),
+                            Loses = g.Sum(result => result.Lose)
+                        }).ToList();
             }
         }
 
@@ -124,33 +132,29 @@ namespace BasketballStatistics.Data
         public IEnumerable<PersonalStatisticsViewModel> StatisticsOfPlayersOfTeam(Match match, string nameOfTeam)
         {
             using (context = new Context())
-            {
-                var playersStat = (from stat in context.PersonalStatistics
-                                   where stat.Player.Team.Name == nameOfTeam
-                                   select new PersonalStatisticsViewModel
-                                   {
-                                       Name = stat.Player.Name,
-                                       Surname = stat.Player.Surname,
-                                       Position = stat.Player.Position.ToString(),
-                                       Age = ((int)(DateTime.Now - stat.Player.BirthDate).TotalDays) / 365,
-                                       Points = stat.Points,
-                                       Assists = stat.Assists,
-                                       Rebounds = stat.Rebounds,
-                                       Steals = stat.Steals,
-                                       BlockedShots = stat.BlockedShots,
-                                       ShotsFromGame = stat.ShotsFromGame,
-                                       ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
-                                       ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
-                                       ShotsFromGameFar = stat.ShotsFromGameFar,
-                                       ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
-                                       ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
-                                       FreeThrows = stat.FreeThrows,
-                                       FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
-                                       FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
-                                   }).ToList();
-                return playersStat;
-            }
-
+                return (from stat in context.PersonalStatistics
+                        where stat.Player.Team.Name == nameOfTeam && stat.Match.Id == match.Id
+                        select new PersonalStatisticsViewModel
+                        {
+                            Name = stat.Player.Name,
+                            Surname = stat.Player.Surname,
+                            Position = stat.Player.Position.ToString(),
+                            Age = ((int)(DateTime.Now - stat.Player.BirthDate).TotalDays) / 365,
+                            Points = stat.Points,
+                            Assists = stat.Assists,
+                            Rebounds = stat.Rebounds,
+                            Steals = stat.Steals,
+                            BlockedShots = stat.BlockedShots,
+                            ShotsFromGame = stat.ShotsFromGame,
+                            ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
+                            ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
+                            ShotsFromGameFar = stat.ShotsFromGameFar,
+                            ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
+                            ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
+                            FreeThrows = stat.FreeThrows,
+                            FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
+                            FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
+                        }).ToList();
         }
 
         // Добавление команды в базу. Возврат : Exception - команда уже существует
@@ -228,6 +232,16 @@ namespace BasketballStatistics.Data
                 context.SaveChanges();
             }
 
+        }
+        public void DeletePlayerFromDatabase(Player player)
+        {
+            using (context = new Context())
+            {
+                var ps = context.PersonalStatistics.Where(stat => stat.Player.Id == player.Id);
+                context.PersonalStatistics.RemoveRange(ps);
+                context.Players.Remove(player);
+                context.SaveChanges();
+            }
         }
     }
 }
