@@ -19,6 +19,15 @@ namespace BasketballStatistics.Data
             }
         }
 
+        public IEnumerable<Player> AllPlayers
+        {
+            get
+            {
+                using (context = new Context())
+                    return context.Players.ToList();
+            }
+        }
+
         public IEnumerable<MatchViewModel> AllMatchesData()
         {
             using (context = new Context())
@@ -56,6 +65,14 @@ namespace BasketballStatistics.Data
                 return context.Players.FirstOrDefault(pl => pl.Name == name && pl.Surname == surname
                                                       && pl.Height == height && pl.Weight == weight
                                                       && pl.BirthDate == birthdate && pl.Position == position);
+        }
+        public string FindCoach(Team team)
+        {
+            using (context = new Context())
+            {
+                var coach = (context.Coaches.Where(c => c.Team.Id == team.Id)).First();
+                return coach.Name + " " + coach.Surname;
+            }
         }
 
         public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
@@ -228,6 +245,16 @@ namespace BasketballStatistics.Data
                 context.SaveChanges();
             }
 
+        }
+        public void DeletePlayerFromDatabase(Player player)
+        {
+            using (context = new Context())
+            {
+                var ps = context.PersonalStatistics.Where(stat => stat.Player.Id == player.Id);
+                context.PersonalStatistics.RemoveRange(ps);
+                context.Players.Remove(player);
+                context.SaveChanges();
+            }
         }
     }
 }
