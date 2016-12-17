@@ -121,9 +121,15 @@ namespace BasketballStatistics.UI
             Close();
         }
 
-        private void TimeOutTimer()
+        private void TimeOutTimer(string TeamTimeOut)
         {
             TimerPause();
+
+            txtQuarter.Text = TeamTimeOut;
+            btnStart.IsEnabled = false;
+            btnStop.IsEnabled = false;
+            btnFirstTeamTimeOut.IsEnabled = false;
+            btnSecondTeamTimeOut.IsEnabled = false;
 
             StartTimeOut = DateTime.Now;
             TimerTimeOut = TimeSpan.FromMinutes(1);
@@ -142,11 +148,27 @@ namespace BasketballStatistics.UI
             {
                 TimeOut.Stop();
                 btnStart.IsEnabled = true;
-                TimeLeft = TimerGame - (DateTime.Now - StartTime);
+                btnStop.IsEnabled = false;
+                btnFirstTeamTimeOut.IsEnabled = true;
+                btnSecondTeamTimeOut.IsEnabled = true;
+                txtQuarter.Text = Quarter.ToString();
+                TimeLeft = TimerGame - (DateTime.Now - StartTime.Add(DateTime.Now - PauseTime));
                 txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
             }
             else
                 txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
+        }
+
+        private void btnFirstTeamTimeOut_Click(object sender, RoutedEventArgs e)
+        {
+            string s = "Time Out by 1 team";
+            TimeOutTimer(s);
+        }
+
+        private void btnSecondTeamTimeOut_Click(object sender, RoutedEventArgs e)
+        {
+            string s = "Time Out by 2 team";
+            TimeOutTimer(s);
         }
     }
 }
