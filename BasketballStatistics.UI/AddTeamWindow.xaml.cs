@@ -36,8 +36,10 @@ namespace BasketballStatistics.UI
             // Trying to add a new team to the DB.
             try
             {
-                var team = _repository.AddTeamInDatabase(txtName.Text);
-                //_repository.AddCoachInDatabase(name, surname, team); - добавляем тренера
+                var teamName = txtName.Text;
+                var coachName = txtCoachName.Text;
+                var coachSurname = txtCoachSurName.Text;
+                _repository.AddTeamInDatabase(teamName, coachName, coachSurname);
                 Close();
             }
             catch (Exception ex)

@@ -55,7 +55,7 @@ namespace BasketballStatistics.Data
             using (context = new Context())
                 return context.Players.FirstOrDefault(pl => pl.Name == name && pl.Surname == surname
                                                       && pl.Height == height && pl.Weight == weight
-                                                      && pl.BirthDate == birthdate && pl.Position == position); 
+                                                      && pl.BirthDate == birthdate && pl.Position == position);
         }
 
         public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
@@ -154,26 +154,41 @@ namespace BasketballStatistics.Data
         }
 
         // Добавление команды в базу. Возврат : Exception - команда уже существует
-        public Team AddTeamInDatabase(string nameOfTeam)
+        public void AddTeamInDatabase(string nameOfTeam, string coachName, string coachSurname)
         {
-            var checkIfExists = FindTeam(nameOfTeam);
+            if (String.IsNullOrWhiteSpace(nameOfTeam))
+                throw new ArgumentException("Team name cannot be null or whitespaces!");
+            if (String.IsNullOrWhiteSpace(coachName))
+                throw new ArgumentException("Coach name cannot be null or whitespaces!");
+            if (String.IsNullOrWhiteSpace(coachSurname))
+                throw new ArgumentException("Coach surname cannot be null or whitespaces!");
 
-            if (checkIfExists != null)
+            if (FindTeam(nameOfTeam) != null)
                 throw new ArgumentException("Team with this name already exists!");
-            else
+
+            using (context = new Context())
             {
-                using (context = new Context())
-                {
-                    var team = new Team { Name = nameOfTeam };
-                    context.Teams.Add(team);
-                    context.SaveChanges();
-                    return team;
-                }
+                var team = new Team { Name = nameOfTeam };
+                context.Teams.Add(team);
+                context.Coaches.Add(new Coach { Name = coachName, Surname = coachSurname, Team = team });
+                context.SaveChanges();
             }
+
+
         }
         //Добавление игрока в базу данных. Возврат : Exception- игрок уже существует
         public void AddPlayerInDatabase(string name, string surname, double height, double weight, DateTime birthdate, string position, Team team)
         {
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name cannot be null or whitespaces");
+            if (String.IsNullOrWhiteSpace(surname))
+                throw new ArgumentException("Surname cannot be null or whitespaces");
+            if (birthdate == null)
+                throw new ArgumentException("Incorrect format of BirthDate");
+            if (birthdate > DateTime.Now)
+                throw new ArgumentException("BirthDate cannot be later than now");
+            if ((DateTime.Now - birthdate).Days / 365 < 15)
+                throw new ArgumentException("Player cannot be younger than 15 years");
             var positionEnum = new Position();
             switch (position)
             {
@@ -196,22 +211,23 @@ namespace BasketballStatistics.Data
 
             if (FindPlayer(name, surname, height, weight, birthdate, positionEnum) != null)
                 throw new ArgumentException("This player alredy exists!");
-            else
-            {
-                var player = new Player { Name = name, Surname = surname, BirthDate = birthdate, Height = height, Weight = weight, Position = positionEnum, Team = team };
-                using (context = new Context())
-                {
-                    context.Players.Add(player);
-                    context.SaveChanges();
-                }
-            }
-        }
-        public void AddCoachInDatabase(string name, string surname, Team team)
-        {
+
+
             using (context = new Context())
             {
-                context.Coaches.Add(new Coach { Name = name, Surname = surname, Team = team });
+                context.Players.Add(new Player
+                {
+                    Name = name,
+                    Surname = surname,
+                    BirthDate = birthdate,
+                    Height = height,
+                    Weight = weight,
+                    Position = positionEnum,
+                    Team = context.Teams.First(t => t.Id == team.Id)
+                });
+                context.SaveChanges();
             }
+
         }
     }
 }

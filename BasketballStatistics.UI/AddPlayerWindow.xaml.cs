@@ -52,12 +52,6 @@ namespace BasketballStatistics.UI
             try
             {
                 // Checking if input values are valid.
-                name = txtName.Text;
-                surname = txtSurname.Text;
-                if (String.IsNullOrWhiteSpace(name))
-                    throw new ArgumentException("Name cannot be null or whitespaces");
-                if (String.IsNullOrWhiteSpace(surname))
-                    throw new ArgumentException("Surname cannot be null or whitespaces");
                 if (!double.TryParse(txtHeight.Text, out height) || height <= 0)
                     throw new ArgumentException("Inccorect format of height! It must be a positive, numeric value.");
                 if (!double.TryParse(txtWeight.Text, out weight) || weight <= 0)
@@ -67,7 +61,7 @@ namespace BasketballStatistics.UI
                 if (team == null)
                     throw new ArgumentException("Something went wrong.");
                 var position = comboBoxPosition.SelectionBoxItem.ToString();
-                
+
                 // Adding to the DB.
                 _repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, (DateTime)SelectedDate, position, team);
                 Close();
@@ -86,7 +80,7 @@ namespace BasketballStatistics.UI
             }
             catch(Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                MessageBox.Show("An error with BirthDate occurred: " + ex.Message);
             }
         }
     }

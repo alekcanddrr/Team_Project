@@ -27,7 +27,7 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class NewGameWindow : Window
     {
-        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10)};
+        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1)};
         private DateTime StartTime;
         private TimeSpan Timer = TimeSpan.FromMinutes(1);
         private DateTime PauseTime;
