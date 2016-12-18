@@ -103,19 +103,21 @@ namespace BasketballStatistics.Data
         {
             using (context = new Context())
             {
+                // At first we get all winners.
                 var winners = context.Matches.Select(match => new
                 {
                     Team = match.Team1Score > match.Team2Score ? match.Team1 : match.Team2,
                     Win = 1,
                     Lose = 0
                 });
+                // Then we get all losers.
                 var losers = context.Matches.Select(match => new
                 {
                     Team = match.Team1Score > match.Team2Score ? match.Team2 : match.Team1,
                     Win = 0,
                     Lose = 1
                 });
-
+                // We concat them and group by team. So we get team, its loses and victories.
                 return (from t in winners.Concat(losers)
                         group t by t.Team into g
                         orderby g.Key.Name
@@ -177,9 +179,8 @@ namespace BasketballStatistics.Data
                 context.Coaches.Add(new Coach { Name = coachName, Surname = coachSurname, Team = team });
                 context.SaveChanges();
             }
-
-
         }
+
         //Добавление игрока в базу данных. Возврат : Exception- игрок уже существует
         public void AddPlayerInDatabase(string name, string surname, double height, double weight, DateTime birthdate, string position, Team team)
         {

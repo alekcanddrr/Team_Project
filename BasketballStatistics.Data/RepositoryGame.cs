@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.Entity;
 
 namespace BasketballStatistics.Data
 {
-    enum StatisticItem
+    public enum StatisticItem
     {
         Points,
         Assists,
@@ -22,244 +20,196 @@ namespace BasketballStatistics.Data
         FreeTrowsSuccessfull
     }
 
-    class RepositoryGame
+    public class RepositoryGame
     {
-        List<PersonalStatistics> stat = new List<PersonalStatistics>();
-        CommandStatistics statTeam1 = new CommandStatistics();
-        CommandStatistics statTeam2 = new CommandStatistics();
+        List<PersonalStatistics> stat;
+        CommandStatistics statTeam1, statTeam2;
         Match match;
-        
-        public RepositoryGame(string team1, string team2, string place)
+
+        public List<PersonalStatistics> Statistics
         {
-            using (Context c = new Context())
+            get
             {
-                var players = c.Players.ToList().FindAll(p => p.Team.Name == team1 || p.Team.Name == team2);
-
-                players.ForEach(p => stat.Add(new PersonalStatistics { Player = p }));
-
-                statTeam1.Team = c.Teams.First(t => t.Name == team1);
-                statTeam2.Team = c.Teams.First(t => t.Name == team2);
-                match = new Match { Date = DateTime.Now, Place = place, Team1 = statTeam1.Team, Team2 = statTeam2.Team };
-
-                stat.ForEach(s => s.Match = match);
-                statTeam1.Match = match;
-                statTeam2.Match = match;
+                return stat.ToList();
             }
         }
 
-        public void ChangeStat(Player player, StatisticItem statItem , bool f)
+        public RepositoryGame(Team team1, Team team2, string place)
         {
-            var p = stat.Find(s => s.Player.Name == player.Name && s.Player.Surname == player.Surname);
+            if (string.IsNullOrWhiteSpace(place))
+                throw new ArgumentException("Incorrect format of the place. This field should not be empty!");
 
-            if (f)
+            using (Context context = new Context())
             {
-                
-                switch (statItem)
+                team1 = context.Teams.First(team => team1.Id == team.Id);
+                team2 = context.Teams.First(team => team2.Id == team.Id);
+
+                match = new Match
                 {
-                    case StatisticItem.Assists:
-                        p.Assists++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.Assists++;
-                        else
-                            statTeam2.Assists++;
-                        break;
-                    case StatisticItem.BlockedShots:
-                        p.BlockedShots++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.BlockedShots++;
-                        else
-                            statTeam2.BlockedShots++;
-                        break;
-                    case StatisticItem.FreeTrows:
-                        p.FreeThrows++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.FreeThrows++;
-                        else
-                            statTeam2.FreeThrows++;
-                        break;
-                    case StatisticItem.FreeTrowsSuccessfull:
-                        p.FreeThrowsSuccessfull++;
-                        p.Points += 1;
-                        if (statTeam1.Team == p.Player.Team)
-                        {
-                            statTeam1.FreeThrowsSuccessfull++;
-                            statTeam1.Points += 1;
-                        }
-                        else
-                        {
-                            statTeam2.FreeThrowsSuccessfull++;
-                            statTeam2.Points += 1;
-                        }
-                        break;
-                    case StatisticItem.Rebound:
-                        p.Rebounds++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.Rebounds++;
-                        else
-                            statTeam2.Rebounds++;
-                        break;
-                    case StatisticItem.ShotsFromGame:
-                        p.ShotsFromGame++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.ShotsFromGame++;
-                        else
-                            statTeam2.ShotsFromGame++;
-                        break;
-                    case StatisticItem.ShotsFromGameFar:
-                        p.ShotsFromGameFar++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.ShotsFromGameFar++;
-                        else
-                            statTeam2.ShotsFromGameFar++;
-                        break;
-                    case StatisticItem.ShotsFromGameFarSuccessfull:
-                        p.ShotsFromGameFarSuccessfull++;
-                        p.Points += 3;
-                        if (statTeam1.Team == p.Player.Team)
-                        {
-                            statTeam1.ShotsFromGameFarSuccessfull++;
-                            statTeam1.Points += 3;
-                        }
-                        else
-                        {
-                            statTeam2.ShotsFromGameFarSuccessfull++;
-                            statTeam2.Points += 3;
-                        }
-                        break;
-                    case StatisticItem.ShotsFromGameSuccessfull:
-                        p.ShotsFromGameSuccessfull++;
-                        p.Points += 2;
-                        if (statTeam1.Team == p.Player.Team)
-                        {
-                            statTeam1.ShotsFromGameSuccessfull++;
-                            statTeam1.Points += 2;
-                        }
-                        else
-                        {
-                            statTeam2.ShotsFromGameSuccessfull++;
-                            statTeam2.Points += 2;
-                        }
-                        break;
-                    case StatisticItem.Steals:
-                        p.Steals++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.Steals++;
-                        else
-                            statTeam2.Steals++;
-                        break;
-                }
+                    Date = DateTime.Now,
+                    Place = place,
+                    Team1 = team1,
+                    Team2 = team2
+                };
+
+                statTeam1 = new CommandStatistics { Team = team1, Match = match };
+                statTeam2 = new CommandStatistics { Team = team2, Match = match };
+
+                stat = new List<PersonalStatistics>();
+                foreach (var player in context.Players.Include(p => p.Team))
+                    if (player.Team.Id == team1.Id || player.Team.Id == team2.Id)
+                        stat.Add(new PersonalStatistics { Player = player, Match = match });
             }
-            else
+        }
+
+        public void ChangeStat(object selected, StatisticItem statItem, int change)
+        {
+            if (!(selected is PersonalStatistics))
+                throw new Exception("Something went wrong. Try again.");
+
+            var player = selected as PersonalStatistics;
+            bool isInFirstTeam = player.Player.Team == statTeam1.Team;
+
+            switch (statItem)
             {
-                switch (statItem)
-                {
-                    case StatisticItem.Assists:
-                        p.Assists--;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.Assists--;
-                        else
-                            statTeam2.Assists--;
-                        break;
-                    case StatisticItem.BlockedShots:
-                        p.BlockedShots--;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.BlockedShots--;
-                        else
-                            statTeam2.BlockedShots--;
-                        break;
-                    case StatisticItem.FreeTrows:
-                        p.FreeThrows--;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.FreeThrows--;
-                        else
-                            statTeam2.FreeThrows--;
-                        break;
-                    case StatisticItem.FreeTrowsSuccessfull:
-                        p.FreeThrowsSuccessfull--;
-                        p.Points -= 1;
-                        if (statTeam1.Team == p.Player.Team)
-                        {
-                            statTeam1.FreeThrowsSuccessfull--;
-                            statTeam1.Points-= 1;
-                        }
-                        else
-                        {
-                            statTeam2.FreeThrowsSuccessfull--;
-                            statTeam2.Points -= 1;
-                        }
-                        break;
-                    case StatisticItem.Rebound:
-                        p.Rebounds--;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.Rebounds--;
-                        else
-                            statTeam2.Rebounds--;
-                        break;
-                    case StatisticItem.ShotsFromGame:
-                        p.ShotsFromGame--;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.ShotsFromGame--;
-                        else
-                            statTeam2.ShotsFromGame--;
-                        break;
-                    case StatisticItem.ShotsFromGameFar:
-                        p.ShotsFromGameFar--;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.ShotsFromGameFar--;
-                        else
-                            statTeam2.ShotsFromGameFar--;
-                        break;
-                    case StatisticItem.ShotsFromGameFarSuccessfull:
-                        p.ShotsFromGameFarSuccessfull--;
-                        p.Points-= 3;
-                        if (statTeam1.Team == p.Player.Team)
-                        {
-                            statTeam1.ShotsFromGameFarSuccessfull--;
-                            statTeam1.Points -= 3;
-                        }
-                        else
-                        {
-                            statTeam2.ShotsFromGameFarSuccessfull--;
-                            statTeam2.Points -= 3;
-                        }
-                        break;
-                    case StatisticItem.ShotsFromGameSuccessfull:
-                        p.ShotsFromGameSuccessfull--;
-                        p.Points += 2;
-                        if (statTeam1.Team == p.Player.Team)
-                        {
-                            statTeam1.ShotsFromGameSuccessfull--;
-                            statTeam1.Points -= 2;
-                        }
-                        else
-                        {
-                            statTeam2.ShotsFromGameSuccessfull--;
-                            statTeam2.Points-= 2;
-                        }
-                        break;
-                    case StatisticItem.Steals:
-                        p.Steals++;
-                        if (statTeam1.Team == p.Player.Team)
-                            statTeam1.Steals--;
-                        else
-                            statTeam2.Steals--;
-                        break;
-                }
+                case StatisticItem.Assists:
+                    Check(change, player.Assists);
+                    player.Assists += change;
+                    if (isInFirstTeam)
+                        statTeam1.Assists += change;
+                    else
+                        statTeam2.Assists += change;
+                    break;
+
+                case StatisticItem.BlockedShots:
+                    Check(change, player.BlockedShots);
+                    player.BlockedShots += change;
+                    if (isInFirstTeam)
+                        statTeam1.BlockedShots += change;
+                    else
+                        statTeam2.BlockedShots += change;
+                    break;
+
+                case StatisticItem.FreeTrows:
+                    Check(change, player.FreeThrows);
+                    player.FreeThrows += change;
+                    if (isInFirstTeam)
+                        statTeam1.FreeThrows += change;
+                    else
+                        statTeam2.FreeThrows += change;
+                    break;
+
+                case StatisticItem.FreeTrowsSuccessfull:
+                    Check(change, player.BlockedShots);
+                    player.FreeThrowsSuccessfull += change;
+                    player.FreeThrows += change;
+                    player.Points += change > 0 ? 1 : -1;
+                    if (isInFirstTeam)
+                    {
+                        statTeam1.FreeThrowsSuccessfull += change;
+                        statTeam1.FreeThrows += change;
+                        statTeam1.Points += change > 0 ? 1 : -1;
+                    }
+                    else
+                    {
+                        statTeam2.FreeThrowsSuccessfull += change;
+                        statTeam2.FreeThrows += change;
+                        statTeam2.Points += change > 0 ? 1 : -1;
+                    }
+                    break;
+
+                case StatisticItem.Rebound:
+                    Check(change, player.Rebounds);
+                    player.Rebounds += change;
+                    if (isInFirstTeam)
+                        statTeam1.Rebounds += change;
+                    else
+                        statTeam2.Rebounds += change;
+                    break;
+
+                case StatisticItem.ShotsFromGame:
+                    Check(change, player.ShotsFromGame);
+                    player.ShotsFromGame += change;
+                    if (isInFirstTeam)
+                        statTeam1.ShotsFromGame += change;
+                    else
+                        statTeam2.ShotsFromGame += change;
+                    break;
+
+                case StatisticItem.ShotsFromGameFar:
+                    Check(change, player.ShotsFromGameFar);
+                    player.ShotsFromGameFar += change;
+                    if (isInFirstTeam)
+                        statTeam1.ShotsFromGameFar += change;
+                    else
+                        statTeam2.ShotsFromGameFar += change;
+                    break;
+
+                case StatisticItem.ShotsFromGameFarSuccessfull:
+                    Check(change, player.ShotsFromGameFarSuccessfull);
+                    player.ShotsFromGameFarSuccessfull += change;
+                    player.ShotsFromGameFar += change;
+                    player.Points += change > 0 ? 3 : -3;
+                    if (isInFirstTeam)
+                    {
+                        statTeam1.ShotsFromGameFarSuccessfull += change;
+                        statTeam1.ShotsFromGameFar += change;
+                        statTeam1.Points += change > 0 ? 3 : -3;
+                    }
+                    else
+                    {
+                        statTeam2.ShotsFromGameFarSuccessfull += change;
+                        statTeam2.ShotsFromGameFar += change;
+                        statTeam2.Points += change > 0 ? 3 : -3;
+                    }
+                    break;
+
+                case StatisticItem.ShotsFromGameSuccessfull:
+                    Check(change, player.ShotsFromGameSuccessfull);
+                    player.ShotsFromGameSuccessfull += change;
+                    player.ShotsFromGame += change;
+                    player.Points += change > 0 ? 2 : -2;
+                    if (isInFirstTeam)
+                    {
+                        statTeam1.ShotsFromGameSuccessfull += change;
+                        statTeam1.ShotsFromGame += change;
+                        statTeam1.Points += change > 0 ? 2 : -2;
+                    }
+                    else
+                    {
+                        statTeam2.ShotsFromGameSuccessfull += change;
+                        statTeam2.ShotsFromGame += change;
+                        statTeam2.Points += change > 0 ? 2 : -2;
+                    }
+                    break;
+
+                case StatisticItem.Steals:
+                    Check(change, player.Steals);
+                    player.Steals += change;
+                    if (isInFirstTeam)
+                        statTeam1.Steals += change;
+                    else
+                        statTeam2.Steals += change;
+                    break;
             }
+        }
+
+        private void Check(int change, int property)
+        {
+            if (property == 0 && change < 0)
+                throw new ArgumentException("A property cannot be negative value.");
         }
 
         public void GameOver()
         {
             using (Context c = new Context())
             {
-                c.CommandStatistics.Add(statTeam1);
-                c.CommandStatistics.Add(statTeam2);
+                c.CommandStatistics.AddRange(new[] { statTeam1, statTeam2 });
                 c.PersonalStatistics.AddRange(stat);
                 c.Matches.Add(match);
 
                 c.SaveChanges();
             }
         }
-
     }
 }

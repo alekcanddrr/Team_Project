@@ -27,6 +27,10 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class NewGameWindow : Window
     {
+        // Adding repositories.
+        Repository _repository;
+        RepositoryGame _gameRepository;
+
         private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         private DispatcherTimer TimeOut = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         private DateTime StartTime;
@@ -37,21 +41,39 @@ namespace BasketballStatistics.UI
         private int Quarter = 1;
         private bool play;
 
-        public NewGameWindow(GameType gameType, Team team1, Team team2)
+        public NewGameWindow(GameType gameType, Team team1, Team team2, string matchPlace)
         {
             InitializeComponent();
             GameTime.Tick += TimeTick;
             TimeOut.Tick += TimeOutTimer_Tick;
 
+            _repository = new Repository();
+            _gameRepository = new RepositoryGame(team1, team2, matchPlace);
+
             txtFirstTeam.Text = team1.Name;
             txtSecondTeam.Text = team2.Name;
+            txtFirstTeamCoach.Text = "Coach: " + _repository.FindCoach(team1);
+            txtSecondTeamCoach.Text = "Coach: " + _repository.FindCoach(team2);
+
+            dataGridPlayers.ItemsSource = _gameRepository.Statistics;
+
+            Closing += (object sender, System.ComponentModel.CancelEventArgs e) => Owner.Focus();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            GameOver();
+            var result = MessageBox.Show("Do you want to save data?", "Closing window", MessageBoxButton.YesNoCancel);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                _gameRepository.GameOver();
+                Close();
+            }
+            else if (result == MessageBoxResult.No)
+                Close();
         }
 
+        #region Timer
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             if (!play)
@@ -134,8 +156,8 @@ namespace BasketballStatistics.UI
             StartTimeOut = DateTime.Now;
             TimerTimeOut = TimeSpan.FromMinutes(1);
 
-         //   btnStart.IsEnabled = false;
-         //   btnStop.IsEnabled = false;
+            //   btnStart.IsEnabled = false;
+            //   btnStop.IsEnabled = false;
 
             TimeOut.Start();
 
@@ -169,6 +191,106 @@ namespace BasketballStatistics.UI
         {
             string s = "Time Out by 2 team";
             TimeOutTimer(s);
+        }
+        #endregion
+
+        #region Button clicks (for table editing: incrementing and decrementing.
+        private void btnAssistsUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.Assists);
+        }
+        private void btnAssistsDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.Assists);
+        }
+        private void btnReboundsUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.Rebound);
+        }
+        private void btnReboundsDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.Rebound);
+        }
+        private void btnStealsUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.Steals);
+        }
+        private void btnStealsDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.Steals);
+        }
+        private void btnBlockedShotsUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.BlockedShots);
+        }
+        private void btnBlockedShotsDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.BlockedShots);
+        }
+        private void btnShotsFromGameUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.ShotsFromGame);
+        }
+        private void btnShotsFromGameDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.ShotsFromGame);
+        }
+        private void btnShotsFromGameSuccessfullUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.ShotsFromGameSuccessfull);
+        }
+        private void btnShotsFromGameSuccessfullDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.ShotsFromGameSuccessfull);
+        }
+        private void btnShotsFromGameFarUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.ShotsFromGameFar);
+        }
+        private void btnShotsFromGameFarDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.ShotsFromGameFar);
+        }
+        private void btnShotsFromGameFarSuccessfullUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.ShotsFromGameFarSuccessfull);
+        }
+        private void btnShotsFromGameFarSuccessfullDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.ShotsFromGameFarSuccessfull);
+        }
+        private void btnFreeThrowsUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.FreeTrows);
+        }
+        private void btnFreeThrowsDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.FreeTrows);
+        }
+        private void btnFreeThrowsSuccessfullUp_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(1, StatisticItem.FreeTrowsSuccessfull);
+        }
+        private void btnFreeThrowsSuccessfullDown_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridChange(-1, StatisticItem.FreeTrowsSuccessfull);
+        }
+        #endregion
+
+        private void DataGridChange(int change, StatisticItem statistic)
+        {
+            try
+            {
+                // Getting index and a new player with changes.
+                var index = dataGridPlayers.SelectedIndex;
+                _gameRepository.ChangeStat(dataGridPlayers.SelectedItem, statistic, change);
+                // Adding changes to the DataGrid.
+                dataGridPlayers.Items.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

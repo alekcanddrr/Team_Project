@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
         Icon="Img/basketball.ico"
-        Title="Game" Height="800" Width="800"
-        ResizeMode="NoResize"
+        Title="Game" Height="680" Width="1200" MinWidth="1100" MinHeight="680"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,21 +15,21 @@
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2.5*"/>
-            <RowDefinition Height="8*"/>
-            <RowDefinition Height="0*"/>
+            <RowDefinition Height="185"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-
-
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.RowSpan="2" Grid.ColumnSpan="3">
-            <Label FontSize="20">Here is a new game</Label>
-            <Button Name="btnSave" Width="100" Margin="0 5 0 0" Padding="4" Background="LightCoral" Click="btnSave_Click">Save</Button>
-        </StackPanel>
 
         <StackPanel VerticalAlignment="Center">
             <Label FontSize="24" FontWeight="Light" HorizontalContentAlignment="Center">Team 1:</Label>
             <TextBlock Name="txtFirstTeam" FontSize="30" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextDecorations="Underline">1 team name</TextBlock>
-            <TextBlock Margin="0 10 0 0" Name="txtFirstTeamCoach" FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Coach name</TextBlock>
+            <TextBlock Margin="0 10 0 5" Name="txtFirstTeamCoach" FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Coach name</TextBlock>
+            <TextBlock FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Timeouts:</TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Name="firstTeamFirstTimeOut" Height="20" Width="20" Margin="2 0 2 0" Background="Green"/>
+                <TextBlock Name="firstTeamSecondTimeOut" Height="20" Width="20" Margin="2 0 2 0" Background="Green"/>
+                <TextBlock Name="firstTeamThirdTimeOut" Height="20" Width="20" Margin="2 0 2 0" Background="Green" Visibility="Collapsed"/>
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="1">
@@ -47,7 +46,231 @@
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <Label FontSize="24" FontWeight="Light" HorizontalContentAlignment="Center">Team 2:</Label>
             <TextBlock Name="txtSecondTeam" FontSize="30" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextDecorations="Underline">2 team name</TextBlock>
-            <TextBlock Margin="0 10 0 0 " Name="txtSecondTeamCoach" FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Coach name</TextBlock>
+            <TextBlock Margin="0 10 0 5" Name="txtSecondTeamCoach" FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Coach name</TextBlock>
+            <TextBlock FontSize="20" FontWeight="Light" TextAlignment="Center" TextWrapping="WrapWithOverflow">Timeouts:</TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Name="secondTeamFirstTimeOut" Height="20" Width="20" Margin="2 0 2 0" Background="Green"/>
+                <TextBlock Name="secondTeamSecondTimeOut" Height="20" Width="20" Margin="2 0 2 0" Background="Green"/>
+                <TextBlock Name="secondTeamThirdTimeOut" Height="20" Width="20" Margin="2 0 2 0" Background="Green" Visibility="Collapsed"/>
+            </StackPanel>
         </StackPanel>
+
+        <DataGrid Name="dataGridPlayers" Grid.Row="1" Grid.ColumnSpan="3" Margin="10" CanUserResizeColumns="False" CanUserResizeRows="False"
+                  CanUserAddRows="False" VerticalGridLinesBrush="LightGray" HorizontalGridLinesBrush="LightGray"
+                  CanUserReorderColumns="False" IsReadOnly="True" SelectionMode="Single" AutoGenerateColumns="False">
+            <!--Creating all columns-->
+            <DataGrid.Columns>
+                <!--Template of all columns-->
+                <DataGridTemplateColumn Header="Player" Width="1.4*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Player.Surname}" Margin="0 0 5 0"/>
+                                <TextBlock Text="{Binding Player.Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Points" Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Points}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Assists" Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnAssistsUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnAssistsUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnAssistsDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnAssistsDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Assists}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Rebounds" Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnReboundsUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnReboundsUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnReboundsDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnReboundsDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Rebounds}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Steals" Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnStealsUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnStealsUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnStealsDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnStealsDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding Steals}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Blocked shots" Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnBlockedShotsUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnBlockedShotsUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnBlockedShotsDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnBlockedShotsDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding BlockedShots}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Shots" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnShotsFromGameUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnShotsFromGameUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnShotsFromGameDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnShotsFromGameDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding ShotsFromGame}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Successfull shots" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnShotsFromGameSuccessfullUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnShotsFromGameSuccessfullUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnShotsFromGameSuccessfullDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnShotsFromGameSuccessfullDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding ShotsFromGameSuccessfull}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Far shots" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnShotsFromGameFarUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnShotsFromGameFarUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnShotsFromGameFarDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnShotsFromGameFarDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding ShotsFromGameFar}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Far successful shots" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnShotsFromGameFarSuccessfullUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnShotsFromGameFarSuccessfullUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnShotsFromGameFarSuccessfullDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnShotsFromGameFarSuccessfullDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding ShotsFromGameFarSuccessfull}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Free throws" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnFreeThrowsUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnFreeThrowsUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnFreeThrowsDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnFreeThrowsDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding FreeThrows}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Free successful throws" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Name="btnFreeThrowsSuccessfullUp" Style="{StaticResource NoBackground}" DockPanel.Dock="Left" Margin="15 5 5 5" BorderThickness="0" Height="15" Width="15" Click="btnFreeThrowsSuccessfullUp_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_up.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Name="btnFreeThrowsSuccessfullDown" Style="{StaticResource NoBackground}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 5 15 5" BorderThickness="0" Width="15" Height="15" Click="btnFreeThrowsSuccessfullDown_Click">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="Img/arrow_down.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" HorizontalAlignment="Center" TextAlignment="Center" Text="{Binding FreeThrowsSuccessfull}"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="2" Grid.ColumnSpan="3" FontSize="15" Padding="4" Width="160" Background="LightGreen" VerticalAlignment="Center" HorizontalAlignment="Center" Click="btnSave_Click">Save game</Button>
     </Grid>
 </Window>

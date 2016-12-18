@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +26,7 @@ namespace BasketballStatistics.UI
             // To make focus on the owner window (MainWindow).
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
         }
-        
+
         private void AddTeams()
         {
             // Parallel adding teams into ComboBoxes. So the program doesn't stop.
@@ -68,14 +69,21 @@ namespace BasketballStatistics.UI
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            // Getting teams by names.
-            var team1 = _repository.FindTeam(firstTeamBox.SelectionBoxItem.ToString());
-            var team2 = _repository.FindTeam(secondTeamBox.SelectionBoxItem.ToString());
-            // Passing these teams to the new window.
-            NewGameWindow gameWindow = new NewGameWindow(GameType.New, team1, team2) { Owner = Owner };
-            gameWindow.Show();
-            // Closing this window.
-            Close();
+            try
+            {
+                // Getting teams by names.
+                var team1 = _repository.FindTeam(firstTeamBox.SelectionBoxItem.ToString());
+                var team2 = _repository.FindTeam(secondTeamBox.SelectionBoxItem.ToString());
+                // Passing these teams to the new window.
+                NewGameWindow gameWindow = new NewGameWindow(GameType.New, team1, team2, txtPlace.Text) { Owner = Owner };
+                gameWindow.Show();
+                // Closing this window.
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
         }
     }
 }

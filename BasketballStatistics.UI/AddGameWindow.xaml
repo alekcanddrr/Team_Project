@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
         Icon="Img/basketball.ico"
-        Title="Add a new game" Height="180" Width="400"
+        Title="Add a new game" Height="240" Width="400"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner">
     <Grid>
@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="1.5*"/>
+            <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
@@ -32,8 +33,13 @@
             <ComboBox Margin="10 0" Name="secondTeamBox" FontSize="15"></ComboBox>
         </StackPanel>
 
-        <Button Name="btnStart" Grid.Row="2" Grid.ColumnSpan="2" FontSize="17" Padding="2" Margin="0 5" VerticalAlignment="Top" HorizontalAlignment="Center" Width="120" Background="LightCoral" Click="btnStart_Click">Start</Button>
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label FontSize="17" DockPanel.Dock="Left">Place:</Label>
+            <TextBox Name="txtPlace" VerticalAlignment="Center" Width="200" FontSize="16" Margin="10 0 0 0"/>
+        </StackPanel>
+        
+        <Button Name="btnStart" Grid.Row="3" Grid.ColumnSpan="2" FontSize="17" Padding="2" Margin="0 5" VerticalAlignment="Top" HorizontalAlignment="Center" Width="120" Background="LightCoral" Click="btnStart_Click">Start</Button>
 
-        <Label Name="loadingLabel" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18">Loading...</Label>
+        <Label Name="loadingLabel" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18" Visibility="Visible">Loading...</Label>
     </Grid>
 </Window>

@@ -22,7 +22,6 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AddPlayerWindow : Window
     {
-        DateTime? SelectedDate;
         Repository _repository = new Repository();
         public AddPlayerWindow()
         {
@@ -46,7 +45,6 @@ namespace BasketballStatistics.UI
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            string name, surname;
             double height, weight;
 
             try
@@ -56,6 +54,8 @@ namespace BasketballStatistics.UI
                     throw new ArgumentException("Inccorect format of height! It must be a positive, numeric value.");
                 if (!double.TryParse(txtWeight.Text, out weight) || weight <= 0)
                     throw new ArgumentException("Incorrect format of weight! It must be a positive, numeric value.");
+                if (!birthDatePicker.SelectedDate.HasValue)
+                    throw new ArgumentException("The date is not mentioned! Please, chose the date of birth.");
 
                 var team = comboBoxTeam.SelectedItem as Team;
                 if (team == null)
@@ -63,24 +63,12 @@ namespace BasketballStatistics.UI
                 var position = comboBoxPosition.SelectionBoxItem.ToString();
 
                 // Adding to the DB.
-                _repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, (DateTime)SelectedDate, position, team);
+                _repository.AddPlayerInDatabase(txtName.Text, txtSurname.Text, height, weight, birthDatePicker.SelectedDate.Value, position, team);
                 Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message);
-            }
-        }
-
-        private void BirthDatePickers_date_changed(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                SelectedDate = BirthDatePicker.SelectedDate;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("An error with BirthDate occurred: " + ex.Message);
             }
         }
     }

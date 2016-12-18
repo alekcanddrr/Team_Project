@@ -35,6 +35,7 @@
         <TextBox Name="txtSurname" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
 
         <Label Grid.Row="3" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">BirthDate:</Label>
+        <DatePicker Name="birthDatePicker" VerticalAlignment="Center" Grid.Column="1" Margin="10 0 10 0" Grid.Row="3" FontSize="16" Text="06.11.1987"/>
 
         <Label Grid.Row="4" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Height:</Label>
         <TextBox Name="txtHeight" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Margin="10 0 10 0"></TextBox>
@@ -44,12 +45,6 @@
 
         <Label Grid.Row="6" FontSize="16" VerticalAlignment="Center" HorizontalContentAlignment="Right">Position:</Label>
         <ComboBox Name="comboBoxPosition" Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" FontSize="15" Margin="10 0 10 0">
-            <!-- Если будем брать из БД -->
-            <!--<ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Position}"></TextBlock>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>-->
             <ComboBoxItem IsSelected="True">Point Guard</ComboBoxItem>
             <ComboBoxItem>Shooting Guard</ComboBoxItem>
             <ComboBoxItem>Small Forward</ComboBoxItem>
@@ -67,6 +62,5 @@
         </ComboBox>
 
         <Button Name="btnAdd" Grid.ColumnSpan="2" Grid.Row="8" FontSize="15" Padding="3" Margin="0 5 0 0"  Width="160" Background="LightGreen" VerticalAlignment="Top" HorizontalAlignment="Center" Click="btnAdd_Click">Add</Button>
-        <DatePicker Name="BirthDatePicker" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="10,10,0,0" Grid.Row="3" Width="276" Height="28" FontSize="16" SelectedDateChanged="BirthDatePickers_date_changed" Text="06.11.1987"/>
     </Grid>
 </Window>
