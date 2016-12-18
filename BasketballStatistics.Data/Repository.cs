@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace BasketballStatistics.Data
     public class Repository
     {
         Context context;
+        List<Player> _allPlayers;
 
         public IEnumerable<Team> AllTeams
         {
@@ -23,9 +25,17 @@ namespace BasketballStatistics.Data
         {
             get
             {
-                using (context = new Context())
-                    return context.Players.ToList();
+                return _allPlayers;
             }
+        }
+
+        public Repository()
+        {
+            using (context = new Context())
+                _allPlayers = context.Players
+                                .Include(p => p.Team)
+                                .OrderBy(p => p.Surname)
+                                .ToList();
         }
 
         public IEnumerable<MatchViewModel> AllMatchesData()
@@ -47,15 +57,12 @@ namespace BasketballStatistics.Data
                 return context.Teams.FirstOrDefault(t => t.Name == name);
         }
 
-        public Match FindMatch(string firstTeam, string secondTeam, string finalScore)
+        public Match FindMatch(MatchViewModel model)
         {
             using (context = new Context())
-            {
-                return context.Matches.First(match =>
-                    match.Team1.Name == firstTeam && match.Team2.Name == secondTeam
-                    && match.Team1Score == int.Parse(finalScore.Split(':')[0])
-                    && match.Team2Score == int.Parse(finalScore.Split(':')[1]));
-            }
+                return context.Matches.First(match => match.Team1.Name == model.FirstTeam
+                                                   && match.Team2.Name == model.SecondTeam
+                                                   && match.Date == model.Date);
         }
 
         public Player FindPlayer(string name, string surname, double height, double weight, DateTime birthdate, Position position)
@@ -234,13 +241,19 @@ namespace BasketballStatistics.Data
             }
 
         }
-        public void DeletePlayerFromDatabase(Player player)
+        public void DeletePlayerFromDatabase(object selectedPlayer)
         {
+            var player = selectedPlayer as Player;
+            if (player == null)
+                throw new ArgumentException("Something went wrong!");
+
+            _allPlayers.Remove(player);
+
             using (context = new Context())
             {
                 var ps = context.PersonalStatistics.Where(stat => stat.Player.Id == player.Id);
                 context.PersonalStatistics.RemoveRange(ps);
-                context.Players.Remove(player);
+                context.Players.Remove(context.Players.First(p => p.Id == player.Id));
                 context.SaveChanges();
             }
         }

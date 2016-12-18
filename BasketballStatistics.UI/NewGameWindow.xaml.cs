@@ -54,7 +54,9 @@ namespace BasketballStatistics.UI
             txtSecondTeam.Text = team2.Name;
             txtFirstTeamCoach.Text = "Coach: " + _repository.FindCoach(team1);
             txtSecondTeamCoach.Text = "Coach: " + _repository.FindCoach(team2);
-
+            txtPlace.Text = "Place: " + matchPlace;
+            txtDate.Text =  "Date: " + _gameRepository.Date;
+            
             dataGridPlayers.ItemsSource = _gameRepository.Statistics;
 
             Closing += (object sender, System.ComponentModel.CancelEventArgs e) => Owner.Focus();

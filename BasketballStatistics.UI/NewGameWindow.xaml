@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
         Icon="Img/basketball.ico"
-        Title="Game" Height="680" Width="1200" MinWidth="1100" MinHeight="680"
+        Title="Game" Height="700" Width="1200" MinWidth="1100" MinHeight="680"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -15,7 +15,7 @@
             <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="185"/>
+            <RowDefinition Height="225"/>
             <RowDefinition Height="7*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
@@ -40,7 +40,9 @@
                 <Button Name="btnStop" FontSize="16" Padding="8 4 8 4" Margin="5 0 0 0" Background="LightCoral" Click="btnStop_Click">Stop time</Button>
             </StackPanel>
             <Button Name="btnFirstTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Margin="0 5 0 5" Background="LightGray" Click="btnFirstTeamTimeOut_Click">1 team timeout</Button>
-            <Button Name="btnSecondTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Background="LightGray" Click="btnSecondTeamTimeOut_Click">2 team timeout</Button>
+            <Button Name="btnSecondTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Margin="0 0 0 5" Background="LightGray" Click="btnSecondTeamTimeOut_Click">2 team timeout</Button>
+            <TextBlock Name="txtPlace" FontSize="16" FontWeight="Light" TextWrapping="Wrap" TextAlignment="Center">Place</TextBlock>
+            <TextBlock Name="txtDate" FontSize="16" FontWeight="Light" TextWrapping="Wrap" TextAlignment="Center">Date</TextBlock>
         </StackPanel>
 
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
@@ -65,8 +67,8 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Player.Surname}" Margin="0 0 5 0"/>
-                                <TextBlock Text="{Binding Player.Name}"/>
+                                <TextBlock Text="{Binding Player.Name}" Margin="0 0 5 0"/>
+                                <TextBlock Text="{Binding Player.Surname}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

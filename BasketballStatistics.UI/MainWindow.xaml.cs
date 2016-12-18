@@ -48,5 +48,11 @@ namespace BasketballStatistics.UI
             AddPlayerWindow addPlayerWindow = new AddPlayerWindow { Owner = this };
             addPlayerWindow.Show();
         }
+
+        private void btnAllPlayers_Click(object sender, RoutedEventArgs e)
+        {
+            AllPlayersWindow allPlayersWindow = new AllPlayersWindow { Owner = this };
+            allPlayersWindow.Show();
+        }
     }
 }

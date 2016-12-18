@@ -26,11 +26,19 @@ namespace BasketballStatistics.Data
         CommandStatistics statTeam1, statTeam2;
         Match match;
 
-        public List<PersonalStatistics> Statistics
+        public IEnumerable<PersonalStatistics> Statistics
         {
             get
             {
                 return stat.ToList();
+            }
+        }
+
+        public string Date
+        {
+            get
+            {
+                return match.Date.ToString("dd.MM.yyyy");
             }
         }
 

@@ -85,5 +85,10 @@ namespace BasketballStatistics.UI
                 MessageBox.Show("An error occurred: " + ex.Message);
             }
         }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }
