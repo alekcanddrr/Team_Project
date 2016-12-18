@@ -39,8 +39,8 @@
                 <Button Name="btnStart" FontSize="16" Padding="8 4 8 4" Margin="0 0 5 0" Background="LightGreen" Click="btnStart_Click">Start time</Button>
                 <Button Name="btnStop" FontSize="16" Padding="8 4 8 4" Margin="5 0 0 0" Background="LightCoral" Click="btnStop_Click">Stop time</Button>
             </StackPanel>
-            <Button Name="btnFirstTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Margin="0 5 0 5" Background="LightGray" Click="btnFirstTeamTimeOut_Click">1 team timeout</Button>
-            <Button Name="btnSecondTeamTimeOut" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Background="LightGray" Click="btnSecondTeamTimeOut_Click">2 team timeout</Button>
+            <Button Name="btnFirstTeamTimeOut" IsEnabled ="false" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Margin="0 5 0 5" Background="LightGray" Click="btnFirstTeamTimeOut_Click">1 team timeout</Button>
+            <Button Name="btnSecondTeamTimeOut" IsEnabled="False" FontSize="14" HorizontalAlignment="Center" Padding="5 2 5 2" Background="LightGray" Click="btnSecondTeamTimeOut_Click">2 team timeout</Button>
         </StackPanel>
 
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
