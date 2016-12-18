@@ -1,18 +1,9 @@
-﻿using BasketballStatistics.Data;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+// Our library;
+using BasketballStatistics.Data;
 
 namespace BasketballStatistics.UI
 {
@@ -21,11 +12,13 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AllGamesWindow : Window
     {
-        Repository _repository = new Repository();
+        Repository _repository;
 
         public AllGamesWindow()
         {
             InitializeComponent();
+            _repository = new Repository();
+
             // To make focus on the owner window (MainWindow).
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
 
@@ -50,19 +43,14 @@ namespace BasketballStatistics.UI
 
         private void btnGameInfo_Click(object sender, RoutedEventArgs e)
         {
-            //NewGameWindow resultWindow = new NewGameWindow(GameType.Old) { Owner = this };
-            //resultWindow.Show();
+            var match = _repository.FindMatch(gamesList.SelectedItem);
+            NewGameWindow resultWindow = new NewGameWindow(GameType.Old, match.Team1, match.Team2, match.Place, match) { Owner = this };
+            resultWindow.Show();
         }
 
         private void gamesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             btnGameInfo.IsEnabled = true;
-        }
-
-        private void gamesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            //NewGameWindow resultWindow = new NewGameWindow(GameType.Old) { Owner = this };
-            //resultWindow.Show();
         }
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)

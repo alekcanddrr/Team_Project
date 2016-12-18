@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BasketballStatistics.Data
 {
@@ -57,12 +55,19 @@ namespace BasketballStatistics.Data
                 return context.Teams.FirstOrDefault(t => t.Name == name);
         }
 
-        public Match FindMatch(MatchViewModel model)
+        public Match FindMatch(object selected)
         {
+            if (!(selected is MatchViewModel))
+                throw new ArgumentException("Something went wrong! Try again.");
+            var model = selected as MatchViewModel;
+
             using (context = new Context())
-                return context.Matches.First(match => match.Team1.Name == model.FirstTeam
-                                                   && match.Team2.Name == model.SecondTeam
-                                                   && match.Date == model.Date);
+                return context.Matches
+                        .Include(m => m.Team1)
+                        .Include(m => m.Team2)
+                        .First(match => match.Team1.Name == model.FirstTeam
+                            && match.Team2.Name == model.SecondTeam
+                            && match.Date == model.Date);
         }
 
         public Player FindPlayer(string name, string surname, double height, double weight, DateTime birthdate, Position position)
@@ -72,6 +77,7 @@ namespace BasketballStatistics.Data
                                                       && pl.Height == height && pl.Weight == weight
                                                       && pl.BirthDate == birthdate && pl.Position == position);
         }
+
         public string FindCoach(Team team)
         {
             using (context = new Context())
@@ -81,28 +87,12 @@ namespace BasketballStatistics.Data
             }
         }
 
-        public CommandStatisticsViewModel GameStatisticsOfTeam(Match match, string nameOfTeam)
+        public CommandStatistics GameStatisticsOfTeam(Match match, string nameOfTeam)
         {
             using (context = new Context())
                 return (from stat in context.CommandStatistics
-                        where (stat.Match == match) && (stat.Match.Team1.Name == nameOfTeam || stat.Match.Team2.Name == nameOfTeam)
-                        select new CommandStatisticsViewModel
-                        {
-                            Points = stat.Points,
-                            Assists = stat.Assists,
-                            Rebounds = stat.Rebounds,
-                            Steals = stat.Steals,
-                            BlockedShots = stat.BlockedShots,
-                            ShotsFromGame = stat.ShotsFromGame,
-                            ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
-                            ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
-                            ShotsFromGameFar = stat.ShotsFromGameFar,
-                            ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
-                            ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
-                            FreeThrows = stat.FreeThrows,
-                            FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
-                            FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
-                        }).First();
+                        where (stat.Match.Id == match.Id) && (stat.Match.Team1.Name == nameOfTeam || stat.Match.Team2.Name == nameOfTeam)
+                        select stat).First();
         }
 
         //Расчет простой статистики команд по победам/поражениям
@@ -138,42 +128,25 @@ namespace BasketballStatistics.Data
         }
 
         //Расчет персональных статистик игроков определенной команды в определенном матче (нужно в окне AllGames)
-        public IEnumerable<PersonalStatisticsViewModel> StatisticsOfPlayersOfTeam(Match match, string nameOfTeam)
+        public IEnumerable<PersonalStatistics> StatisticsOfPlayersOfTeam(Match match)
         {
             using (context = new Context())
                 return (from stat in context.PersonalStatistics
-                        where stat.Player.Team.Name == nameOfTeam && stat.Match.Id == match.Id
-                        select new PersonalStatisticsViewModel
-                        {
-                            Name = stat.Player.Name,
-                            Surname = stat.Player.Surname,
-                            Position = stat.Player.Position.ToString(),
-                            Age = ((int)(DateTime.Now - stat.Player.BirthDate).TotalDays) / 365,
-                            Points = stat.Points,
-                            Assists = stat.Assists,
-                            Rebounds = stat.Rebounds,
-                            Steals = stat.Steals,
-                            BlockedShots = stat.BlockedShots,
-                            ShotsFromGame = stat.ShotsFromGame,
-                            ShotsFromGameSuccessfull = stat.ShotsFromGameSuccessfull,
-                            ShotsFromGamePercent = stat.ShotsFromGame == 0 ? "None" : (((double)stat.ShotsFromGameSuccessfull / stat.ShotsFromGame) * 100).ToString("#.##") + "%",
-                            ShotsFromGameFar = stat.ShotsFromGameFar,
-                            ShotsFromGameFarSuccessfull = stat.ShotsFromGameFarSuccessfull,
-                            ShotsFromGameFarPercent = stat.ShotsFromGameFar == 0 ? "None" : (((double)stat.ShotsFromGameFarSuccessfull / stat.ShotsFromGameFar) * 100).ToString("#.##") + "%",
-                            FreeThrows = stat.FreeThrows,
-                            FreeThrowsSuccessfull = stat.FreeThrowsSuccessfull,
-                            FreeThrowsPercent = stat.FreeThrows == 0 ? "None" : (((double)stat.FreeThrowsSuccessfull / stat.FreeThrows) * 100).ToString("#.##") + "%"
-                        }).ToList();
+                                        .Include(p => p.Player)
+                                        .Include(p => p.Match.Team2)
+                                        .Include(p => p.Match.Team1)
+                        where stat.Match.Id == match.Id
+                        select stat).ToList();
         }
 
         // Добавление команды в базу. Возврат : Exception - команда уже существует
         public void AddTeamInDatabase(string nameOfTeam, string coachName, string coachSurname)
         {
-            if (String.IsNullOrWhiteSpace(nameOfTeam))
+            if (string.IsNullOrWhiteSpace(nameOfTeam))
                 throw new ArgumentException("Team name cannot be null or whitespaces!");
-            if (String.IsNullOrWhiteSpace(coachName))
+            if (string.IsNullOrWhiteSpace(coachName))
                 throw new ArgumentException("Coach name cannot be null or whitespaces!");
-            if (String.IsNullOrWhiteSpace(coachSurname))
+            if (string.IsNullOrWhiteSpace(coachSurname))
                 throw new ArgumentException("Coach surname cannot be null or whitespaces!");
 
             if (FindTeam(nameOfTeam) != null)
@@ -191,9 +164,9 @@ namespace BasketballStatistics.Data
         //Добавление игрока в базу данных. Возврат : Exception- игрок уже существует
         public void AddPlayerInDatabase(string name, string surname, double height, double weight, DateTime birthdate, string position, Team team)
         {
-            if (String.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Name cannot be null or whitespaces");
-            if (String.IsNullOrWhiteSpace(surname))
+            if (string.IsNullOrWhiteSpace(surname))
                 throw new ArgumentException("Surname cannot be null or whitespaces");
             if (birthdate == null)
                 throw new ArgumentException("Incorrect format of BirthDate");
@@ -224,7 +197,6 @@ namespace BasketballStatistics.Data
             if (FindPlayer(name, surname, height, weight, birthdate, positionEnum) != null)
                 throw new ArgumentException("This player alredy exists!");
 
-
             using (context = new Context())
             {
                 context.Players.Add(new Player
@@ -239,8 +211,8 @@ namespace BasketballStatistics.Data
                 });
                 context.SaveChanges();
             }
-
         }
+
         public void DeletePlayerFromDatabase(object selectedPlayer)
         {
             var player = selectedPlayer as Player;

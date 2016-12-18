@@ -69,8 +69,8 @@ namespace BasketballStatistics.Data.Migrations
             List<Match> matches = new List<Match>
             {
                 new Match {Date = DateTime.Now, Place = "Moscow", Team1 = teams[0], Team1Score = 98, Team2 = teams[1], Team2Score = 100 },
-                new Match {Date = new DateTime(2015, 11, 10, 12,11,4) , Place = "Chicago", Team1 = teams[0], Team1Score = 71, Team2 = teams[2], Team2Score = 55 },
-                new Match {Date = new DateTime(2015, 11, 10, 12,11,4) , Place = "Paris", Team1 = teams[1], Team1Score = 76, Team2 = teams[2], Team2Score = 42 }
+                new Match {Date = new DateTime(2015, 11, 10) , Place = "Chicago", Team1 = teams[0], Team1Score = 71, Team2 = teams[2], Team2Score = 55 },
+                new Match {Date = new DateTime(2015, 11, 10) , Place = "Paris", Team1 = teams[1], Team1Score = 76, Team2 = teams[2], Team2Score = 42 }
             };
             context.Matches.AddRange(matches);
 

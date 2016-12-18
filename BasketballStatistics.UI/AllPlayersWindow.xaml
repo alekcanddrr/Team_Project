@@ -14,7 +14,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <ListView Name="playersList" SelectionMode="Single" SelectionChanged="playersList_SelectionChanged">
+        <ListView Name="playersList" SelectionMode="Single" SelectionChanged="playersList_SelectionChanged" FontSize="14">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Surname" Width="100">

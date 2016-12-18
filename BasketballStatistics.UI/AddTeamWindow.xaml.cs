@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 // Project classes.
 using BasketballStatistics.Data;
 
@@ -22,11 +11,13 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AddTeamWindow : Window
     {
-        Repository _repository = new Repository();
+        Repository _repository;
 
         public AddTeamWindow()
         {
             InitializeComponent();
+            _repository = new Repository();
+
             // To make focus on the owner window (MainWindow).
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
         }

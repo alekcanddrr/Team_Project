@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Timers;
 using System.Windows.Threading;
 // Data library.
 using BasketballStatistics.Data;
@@ -22,9 +11,7 @@ namespace BasketballStatistics.UI
     {
         New, Old
     }
-    /// <summary>
-    /// Логика взаимодействия для NewGameWindow.xaml
-    /// </summary>
+
     public partial class NewGameWindow : Window
     {
         // Adding repositories.
@@ -40,23 +27,51 @@ namespace BasketballStatistics.UI
         private int _quarter = 1, _firstTeamTimeOuts, _secondTeamTimeOuts;
         private bool _play;
 
-        public NewGameWindow(GameType gameType, Team team1, Team team2, string matchPlace)
+        public NewGameWindow(GameType gameType, Team team1, Team team2, string matchPlace, Match match = null)
         {
             InitializeComponent();
-            _gameTimer.Tick += TimeTick;
-            _timeoutTimer.Tick += TimeOutTimer_Tick;
 
             _repository = new Repository();
-            _gameRepository = new RepositoryGame(team1, team2, matchPlace);
+
+            switch (gameType)
+            {
+                case GameType.New:
+                    _gameRepository = new RepositoryGame(team1, team2, matchPlace);
+                    btnSave.Click += btnSave_Click;
+                    _gameTimer.Tick += TimeTick;
+                    _timeoutTimer.Tick += TimeOutTimer_Tick;
+                    dataGridPlayers.ItemsSource = _gameRepository.Statistics;
+                    break;
+
+                case GameType.Old:
+                    _gameRepository = new RepositoryGame(team1, team2, matchPlace, match.Date);
+                    btnSave.Click += (object sender, RoutedEventArgs e) => Close();
+                    btnStart.IsEnabled = false;
+                    btnStop.IsEnabled = false;
+                    btnSave.Content = "Close";
+                    txtTime.Text = "Match results";
+
+                    int score1 = match.Team1Score,
+                        score2 = match.Team2Score;
+                    txtScore.Text = $"Score: {score1}:{score2}";
+                    
+                    btnFirstTeamTimeOut.IsEnabled = false;
+                    btnSecondTeamTimeOut.IsEnabled = false;
+                    txtQuarter.Visibility = Visibility.Collapsed;
+                    dataGridPlayers.ItemsSource = _repository.StatisticsOfPlayersOfTeam(match);
+                    firstTeamFirstTimeOut.Background = Brushes.Red;
+                    secondTeamFirstTimeOut.Background = Brushes.Red;
+                    firstTeamSecondTimeOut.Background = Brushes.Red;
+                    secondTeamSecondTimeOut.Background = Brushes.Red;
+                    break;
+            }
 
             txtFirstTeam.Text = team1.Name;
             txtSecondTeam.Text = team2.Name;
             txtFirstTeamCoach.Text = "Coach: " + _repository.FindCoach(team1);
             txtSecondTeamCoach.Text = "Coach: " + _repository.FindCoach(team2);
             txtPlace.Text = "Place: " + matchPlace;
-            txtDate.Text =  "Date: " + _gameRepository.Date;
-            
-            dataGridPlayers.ItemsSource = _gameRepository.Statistics;
+            txtDate.Text = "Date: " + _gameRepository.Date;
 
             Closing += (object sender, System.ComponentModel.CancelEventArgs e) => Owner.Focus();
         }
@@ -77,6 +92,8 @@ namespace BasketballStatistics.UI
         #region Timer
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            dataGridPlayers.IsEnabled = true;
+
             if (!_play)
                 TimerStart();
             else
@@ -92,7 +109,7 @@ namespace BasketballStatistics.UI
             if (TimeLeft <= TimeSpan.Zero)
                 TimerStop();
             else
-                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 0 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
+                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 10 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -139,8 +156,8 @@ namespace BasketballStatistics.UI
                 txtQuarter.Text = "Quarter " + _quarter.ToString();
                 btnSecondTeamTimeOut.IsEnabled = false;
                 btnFirstTeamTimeOut.IsEnabled = false;
-                _gameTime = TimeSpan.FromMinutes(10);
-                txtTime.Text = _gameTime.Minutes + ":" + (_gameTime.Seconds<0? "0"+_gameTime.Seconds: _gameTime.Seconds.ToString());
+                _gameTime = TimeSpan.FromMinutes(1);
+                txtTime.Text = _gameTime.Minutes + ":" + (_gameTime.Seconds < 10 ? "0" + _gameTime.Seconds : _gameTime.Seconds.ToString());
             }
             else
                 GameOver();
@@ -162,14 +179,20 @@ namespace BasketballStatistics.UI
                 btnSecondTeamTimeOut.IsEnabled = true;
 
             _gameStart = DateTime.Now;
-            txtQuarter.Text = "Quarter " + _quarter.ToString();
+            txtQuarter.Text = "Quarter: " + _quarter.ToString();
             _gameTimer.Start();
         }
 
         private void GameOver()
         {
-            MessageBox.Show("Game over!");
-            Close();
+            var result = MessageBox.Show("Game is over! Do you want to save it?", "Game is over", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                _gameRepository.GameOver();
+                Close();
+            }
+            else
+                Close();
         }
 
         private void TimeOutTimer(string TeamTimeOut)
@@ -204,17 +227,17 @@ namespace BasketballStatistics.UI
                 if (_quarter <= 2 && _secondTeamTimeOuts < 2 || _quarter >= 3 && _secondTeamTimeOuts < 3)
                     btnSecondTeamTimeOut.IsEnabled = true;
 
-                txtQuarter.Text = "Quarter " + _quarter.ToString();
+                txtQuarter.Text = "Quarter: " + _quarter.ToString();
                 TimeLeft = _gameTime - (DateTime.Now - _gameStart.Add(DateTime.Now - _pauseTime));
-                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 0 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
+                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 10 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
             }
             else
-                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 0 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
+                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 10 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
         }
 
         private void btnFirstTeamTimeOut_Click(object sender, RoutedEventArgs e)
         {
-            string s = "Time Out by 1 team";
+            string s = "Time-out by 1 team";
             _firstTeamTimeOuts++;
 
             if (_firstTeamTimeOuts == 1)
@@ -229,7 +252,7 @@ namespace BasketballStatistics.UI
 
         private void btnSecondTeamTimeOut_Click(object sender, RoutedEventArgs e)
         {
-            string s = "Time Out by 2 team";
+            string s = "Time-out by 2 team";
             _secondTeamTimeOuts++;
 
             if (_secondTeamTimeOuts == 1)
@@ -335,6 +358,7 @@ namespace BasketballStatistics.UI
                 _gameRepository.ChangeStat(dataGridPlayers.SelectedItem, statistic, change);
                 // Adding changes to the DataGrid.
                 dataGridPlayers.Items.Refresh();
+                txtScore.Text = "Score: " + _gameRepository.Score;
             }
             catch (Exception ex)
             {

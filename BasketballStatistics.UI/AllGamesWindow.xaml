@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:BasketballStatistics.UI"
         mc:Ignorable="d"
         Icon="Img/basketball.ico"
-        Title="All games" Height="400" Width="700"
+        Title="All games" Height="400" Width="770"
         WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="1.25*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -23,7 +23,7 @@
 
         <DockPanel Grid.Row="1" Margin="0 0 5 0">
             <Label DockPanel.Dock="Top" HorizontalAlignment="Center" FontSize="17" FontWeight="Light">Statistics of all games:</Label>
-            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged" MouseDoubleClick="gamesList_MouseDoubleClick">
+            <ListView Name="gamesList" DockPanel.Dock="Top" FontSize="15" SelectionMode="Single" SelectionChanged="gamesList_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Team №1" Width="115">
@@ -38,6 +38,13 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" Text="{Binding SecondTeam}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Date" Width="90">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

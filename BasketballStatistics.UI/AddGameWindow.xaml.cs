@@ -13,11 +13,13 @@ namespace BasketballStatistics.UI
     /// </summary>
     public partial class AddGameWindow : Window
     {
-        Repository _repository = new Repository();
+        Repository _repository;
 
         public AddGameWindow()
         {
             InitializeComponent();
+            _repository = new Repository();
+
             // Adding teams from the DB into ComboBoxes.
             AddTeams();
 
