@@ -21,7 +21,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="0,20,-0.4,20.8">
+        <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="2">
             <Label FontSize="18" HorizontalAlignment="Center">
                 <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center">
                     Welcome to Basketball Statistics application!

@@ -1,6 +1,6 @@
 ﻿using System.Media;
 
-namespace BasketballStatistics.UI
+namespace BasketballStatistics.UI.Notifiers
 {
     static class Sound
     {

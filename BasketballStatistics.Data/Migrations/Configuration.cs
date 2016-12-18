@@ -15,12 +15,7 @@ namespace BasketballStatistics.Data.Migrations
 
         protected override void Seed(BasketballStatistics.Data.Context context)
         {
-            context.Coaches.RemoveRange(context.Coaches);
-            context.CommandStatistics.RemoveRange(context.CommandStatistics);
-            context.Matches.RemoveRange(context.Matches);
-            context.PersonalStatistics.RemoveRange(context.PersonalStatistics);
-            context.Players.RemoveRange(context.Players);
-            context.Teams.RemoveRange(context.Teams);
+            // Test information.
 
             List<Team> teams = new List<Team>
             {

@@ -41,6 +41,6 @@
         <Button Name="btnStart" Grid.Row="3" FontSize="17" Padding="2" Margin="0 5 10 0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="120" Background="LightCoral" Click="btnStart_Click">Start</Button>
         <Button Name="btnClose" Grid.Row="3" Grid.Column="1" FontSize="17" Padding="2" Margin="10 5 0 0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Background="LightCoral" Click="btnClose_Click">Cancel</Button>
         
-        <Label Name="loadingLabel" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18" Visibility="Hidden">Loading...</Label>
+        <Label Name="loadingLabel" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18">Loading...</Label>
     </Grid>
 </Window>

@@ -21,7 +21,7 @@ namespace BasketballStatistics.UI
             _repository = new Repository();
 
             // Adding teams from the DB into ComboBoxes.
-            AddTeams();
+            Loaded += AddTeams;
 
             firstTeamBox.SelectionChanged += firstTeamBox_Selected;
             secondTeamBox.SelectionChanged += secondTeamBox_Selected;
@@ -29,12 +29,12 @@ namespace BasketballStatistics.UI
             Closing += (object sender, CancelEventArgs e) => Owner.Focus();
         }
 
-        private void AddTeams()
+        private async void AddTeams(object sender, RoutedEventArgs e)
         {
             // Parallel adding teams into ComboBoxes. So the program doesn't stop.
-            Task task = new Task(() => Dispatcher.Invoke(() =>
+            await Task.Run(async () => await Dispatcher.Invoke(async () =>
                 {
-                    foreach (var team in _repository.AllTeams)
+                    foreach (var team in await _repository.GetAllTeams())
                     {
                         firstTeamBox.Items.Add(new ComboBoxItem { Content = team.Name });
                         secondTeamBox.Items.Add(new ComboBoxItem { Content = team.Name });
@@ -45,10 +45,7 @@ namespace BasketballStatistics.UI
                     // Similarly in the second ComboBox.
                     secondTeamBox.SelectedIndex = 1;
                     (secondTeamBox.Items[0] as ComboBoxItem).IsEnabled = false;
-                }));
-            // When the task is completed - making hidden our label with "Loading" text.
-            task.ContinueWith(t => Dispatcher.Invoke(() => loadingLabel.Visibility = Visibility.Hidden));
-            task.Start();
+                })).ContinueWith(t => Dispatcher.Invoke(() => loadingLabel.Visibility = Visibility.Hidden));
         }
 
         private void firstTeamBox_Selected(object sender, RoutedEventArgs e)

@@ -24,15 +24,14 @@ namespace BasketballStatistics.UI
             LoadTeams();
         }
 
-        private void LoadTeams()
+        private async void LoadTeams()
         {
             // Parallel loading all teams.
-            Task t = new Task(() => Dispatcher.Invoke(() =>
+            await Task.Run(async () => await Dispatcher.Invoke(async () =>
             {
-                comboBoxTeam.ItemsSource = _repository.AllTeams;
+                comboBoxTeam.ItemsSource = await _repository.GetAllTeams();
                 comboBoxTeam.SelectedIndex = 0;
             }));
-            t.Start();
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)

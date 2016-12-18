@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 // Our library.
 using BasketballStatistics.Data;
+using System.Threading.Tasks;
 
 namespace BasketballStatistics.UI
 {
@@ -18,7 +19,13 @@ namespace BasketballStatistics.UI
             InitializeComponent();
             _repository = new Repository();
 
-            playersList.ItemsSource = _repository.AllPlayers;
+            Loaded += AllPlayersWindow_Loaded;
+        }
+
+        private void AllPlayersWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Task.Run(async () => await Dispatcher.Invoke(async () => playersList.ItemsSource = await _repository.GetAllPlayers()))
+                    .ContinueWith(t => Dispatcher.Invoke(() => loadingLabel.Visibility = Visibility.Hidden));
         }
 
         private void playersList_SelectionChanged(object sender, SelectionChangedEventArgs e)

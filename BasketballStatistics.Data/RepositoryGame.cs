@@ -22,6 +22,7 @@ namespace BasketballStatistics.Data
 
     public class RepositoryGame
     {
+        Context context;
         List<PersonalStatistics> stat;
         CommandStatistics statTeam1, statTeam2;
         Match match;
@@ -55,24 +56,25 @@ namespace BasketballStatistics.Data
             if (string.IsNullOrWhiteSpace(place))
                 throw new ArgumentException("Incorrect format of the place. This field should not be empty!");
 
-            using (Context context = new Context())
-            {
-                match = new Match
-                {
-                    Date = date == default(DateTime) ? DateTime.Now : date,
-                    Place = place,
-                    Team1 = team1,
-                    Team2 = team2
-                };
-                
-                statTeam1 = new CommandStatistics { Team = team1, Match = match };
-                statTeam2 = new CommandStatistics { Team = team2, Match = match };
+            context = new Context();
+            team1 = context.Teams.First(t => t.Id == team1.Id);
+            team2 = context.Teams.First(t => t.Id == team2.Id);
 
-                stat = new List<PersonalStatistics>();
-                foreach (var player in context.Players.Include(p => p.Team))
-                    if (player.Team.Id == team1.Id || player.Team.Id == team2.Id)
-                        stat.Add(new PersonalStatistics { Player = player, Match = match });
-            }
+            match = new Match
+            {
+                Date = date == default(DateTime) ? DateTime.Now : date,
+                Place = place,
+                Team1 = team1,
+                Team2 = team2
+            };
+
+            statTeam1 = new CommandStatistics { Team = team1, Match = match };
+            statTeam2 = new CommandStatistics { Team = team2, Match = match };
+
+            stat = new List<PersonalStatistics>();
+            foreach (var player in context.Players.Include(p => p.Team))
+                if (player.Team.Id == team1.Id || player.Team.Id == team2.Id)
+                    stat.Add(new PersonalStatistics { Player = player, Match = match });
         }
 
         public void ChangeStat(object selected, StatisticItem statItem, int change)
@@ -218,22 +220,20 @@ namespace BasketballStatistics.Data
             match.Team1Score = statTeam1.Points;
             match.Team2Score = statTeam2.Points;
 
-            using (Context context = new Context())
-            {
-                match.Team1 = context.Teams.First(t => t.Id == statTeam1.Team.Id);
-                match.Team2 = context.Teams.First(t => t.Id == statTeam2.Team.Id);
+            //match.Team1 = context.Teams.First(t => t.Id == statTeam1.Team.Id);
+            //match.Team2 = context.Teams.First(t => t.Id == statTeam2.Team.Id);
 
-                statTeam1.Team = context.Teams.First(t => t.Id == statTeam1.Team.Id);
-                statTeam2.Team = context.Teams.First(t => t.Id == statTeam2.Team.Id);
+            //statTeam1.Team = context.Teams.First(t => t.Id == statTeam1.Team.Id);
+            //statTeam2.Team = context.Teams.First(t => t.Id == statTeam2.Team.Id);
 
-                stat.ForEach(s => s.Player = context.Players.First(p => p.Id == s.Player.Id));
+            //stat.ForEach(s => s.Player = context.Players.First(p => p.Id == s.Player.Id));
 
-                context.Matches.Add(match);
-                context.CommandStatistics.AddRange(new[] { statTeam1, statTeam2 });
-                context.PersonalStatistics.AddRange(stat);
+            context.Matches.Add(match);
+            context.CommandStatistics.AddRange(new[] { statTeam1, statTeam2 });
+            context.PersonalStatistics.AddRange(stat);
 
-                context.SaveChanges();
-            }
+            context.SaveChanges();
+            context.Dispose();
         }
     }
 }

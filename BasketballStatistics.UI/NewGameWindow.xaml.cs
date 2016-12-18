@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 // Data library.
 using BasketballStatistics.Data;
+using BasketballStatistics.UI.Notifiers;
 
 namespace BasketballStatistics.UI
 {

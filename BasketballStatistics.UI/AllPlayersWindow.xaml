@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Icon="Img/basketball.ico"
+        ResizeMode="NoResize"
         Title="Players" Height="400" Width="670">
     <Grid>
         <Grid.RowDefinitions>
@@ -74,5 +75,7 @@
             <Button Name="btnDelete" FontSize="15" Background="LightCoral" Padding="20 2 20 2" Margin="20 0 0 0" VerticalAlignment="Center" IsEnabled="False" Click="btnDelete_Click">Delete</Button>
             <Button Name="btnClose" FontSize="15" Background="LightCoral" Padding="20 2 20 2" Margin="0 0 20 0" VerticalAlignment="Center" HorizontalAlignment="Right" Click="btnClose_Click">Cancel</Button>
         </DockPanel>
+
+        <Label Name="loadingLabel" Grid.RowSpan="2" Background="White" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="18">Loading data...Please, wait...</Label>
     </Grid>
 </Window>

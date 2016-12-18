@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace BasketballStatistics.Data
 {
@@ -10,30 +11,20 @@ namespace BasketballStatistics.Data
         Context context;
         List<Player> _allPlayers;
 
-        public IEnumerable<Team> AllTeams
-        {
-            get
-            {
-                using (context = new Context())
-                    return context.Teams.ToList();
-            }
-        }
-
-        public IEnumerable<Player> AllPlayers
-        {
-            get
-            {
-                return _allPlayers;
-            }
-        }
-
-        public Repository()
+        public async Task<IEnumerable<Team>> GetAllTeams()
         {
             using (context = new Context())
-                _allPlayers = context.Players
-                                .Include(p => p.Team)
-                                .OrderBy(p => p.Surname)
-                                .ToList();
+                return await context.Teams.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Player>> GetAllPlayers()
+        {
+            if (_allPlayers == null)
+                using (context = new Context())
+                    _allPlayers = await context.Players.Include(p => p.Team)
+                                            .OrderBy(p => p.Surname)
+                                            .ToListAsync();
+            return _allPlayers;
         }
 
         public IEnumerable<MatchViewModel> AllMatchesData()
@@ -85,14 +76,6 @@ namespace BasketballStatistics.Data
                 var coach = (context.Coaches.Where(c => c.Team.Id == team.Id)).First();
                 return coach.Name + " " + coach.Surname;
             }
-        }
-
-        public CommandStatistics GameStatisticsOfTeam(Match match, string nameOfTeam)
-        {
-            using (context = new Context())
-                return (from stat in context.CommandStatistics
-                        where (stat.Match.Id == match.Id) && (stat.Match.Team1.Name == nameOfTeam || stat.Match.Team2.Name == nameOfTeam)
-                        select stat).First();
         }
 
         //Расчет простой статистики команд по победам/поражениям
