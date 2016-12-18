@@ -31,21 +31,20 @@ namespace BasketballStatistics.UI
         Repository _repository;
         RepositoryGame _gameRepository;
 
-        private DispatcherTimer GameTime = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        private DispatcherTimer TimeOut = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        private DateTime StartTime;
-        private TimeSpan TimerGame = TimeSpan.FromMinutes(10);
-        private DateTime StartTimeOut = DateTime.Now;
-        private TimeSpan TimerTimeOut = TimeSpan.FromMinutes(1);
-        private DateTime PauseTime;
-        private int Quarter = 1;
-        private bool play;
+        private DispatcherTimer _gameTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        private DispatcherTimer _timeoutTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        private DateTime _gameStart, _pauseTime;
+        private TimeSpan _gameTime = TimeSpan.FromMinutes(1);
+        private DateTime _timeoutStart = DateTime.Now;
+        private TimeSpan _timeoutTime = TimeSpan.FromSeconds(10);
+        private int _quarter = 1, _firstTeamTimeOuts, _secondTeamTimeOuts;
+        private bool _play;
 
         public NewGameWindow(GameType gameType, Team team1, Team team2, string matchPlace)
         {
             InitializeComponent();
-            GameTime.Tick += TimeTick;
-            TimeOut.Tick += TimeOutTimer_Tick;
+            _gameTimer.Tick += TimeTick;
+            _timeoutTimer.Tick += TimeOutTimer_Tick;
 
             _repository = new Repository();
             _gameRepository = new RepositoryGame(team1, team2, matchPlace);
@@ -78,7 +77,7 @@ namespace BasketballStatistics.UI
         #region Timer
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            if (!play)
+            if (!_play)
                 TimerStart();
             else
                 TimerRelease();
@@ -89,11 +88,11 @@ namespace BasketballStatistics.UI
 
         private void TimeTick(object sender, EventArgs e)
         {
-            TimeSpan TimeLeft = TimerGame - (DateTime.Now - StartTime);
+            TimeSpan TimeLeft = _gameTime - (DateTime.Now - _gameStart);
             if (TimeLeft <= TimeSpan.Zero)
                 TimerStop();
             else
-                txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
+                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 0 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
         }
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
@@ -105,21 +104,43 @@ namespace BasketballStatistics.UI
 
         private void TimerRelease()
         {
-            StartTime = StartTime.Add(DateTime.Now - PauseTime);
-            GameTime.Start();
+            _gameStart = _gameStart.Add(DateTime.Now - _pauseTime);
+            _gameTimer.Start();
         }
 
         private void TimerStop()
         {
-            play = false;
-            if (Quarter < 4)
+            _play = false;
+            Sound.TimeIsOver();
+            
+            if (_quarter < 4)
             {
-                GameTime.Stop();
+                _gameTimer.Stop();
                 btnStart.IsEnabled = true;
-                Quarter++;
-                txtQuarter.Text = Quarter.ToString();
-                TimerGame = TimeSpan.FromMinutes(10);
-                txtTime.Text = TimerGame.Minutes + ":" + TimerGame.Seconds;
+                _quarter++;
+
+                btnFirstTeamTimeOut.IsEnabled = false;
+                btnSecondTeamTimeOut.IsEnabled = false;
+
+                if (_quarter==3)
+                {
+                    _firstTeamTimeOuts = 0;
+                    _secondTeamTimeOuts = 0;
+
+                    firstTeamThirdTimeOut.Visibility = Visibility.Visible;
+                    secondTeamThirdTimeOut.Visibility = Visibility.Visible;
+
+                    firstTeamFirstTimeOut.Background = Brushes.Green;
+                    firstTeamSecondTimeOut.Background = Brushes.Green;
+                    secondTeamFirstTimeOut.Background = Brushes.Green;
+                    secondTeamSecondTimeOut.Background = Brushes.Green;
+                }
+
+                txtQuarter.Text = "Quarter " + _quarter.ToString();
+                btnSecondTeamTimeOut.IsEnabled = false;
+                btnFirstTeamTimeOut.IsEnabled = false;
+                _gameTime = TimeSpan.FromMinutes(10);
+                txtTime.Text = _gameTime.Minutes + ":" + (_gameTime.Seconds<0? "0"+_gameTime.Seconds: _gameTime.Seconds.ToString());
             }
             else
                 GameOver();
@@ -127,16 +148,22 @@ namespace BasketballStatistics.UI
 
         private void TimerPause()
         {
-            GameTime.Stop();
-            PauseTime = DateTime.Now;
+            _gameTimer.Stop();
+            _pauseTime = DateTime.Now;
         }
 
         private void TimerStart()
         {
-            play = true;
-            StartTime = DateTime.Now;
-            txtQuarter.Text = Quarter.ToString();
-            GameTime.Start();
+            _play = true;
+
+            if (_quarter <= 2 && _firstTeamTimeOuts < 2 || _quarter >= 3 && _firstTeamTimeOuts < 3)
+                btnFirstTeamTimeOut.IsEnabled = true;
+            if (_quarter <= 2 && _secondTeamTimeOuts < 2 || _quarter >= 3 && _secondTeamTimeOuts < 3)
+                btnSecondTeamTimeOut.IsEnabled = true;
+
+            _gameStart = DateTime.Now;
+            txtQuarter.Text = "Quarter " + _quarter.ToString();
+            _gameTimer.Start();
         }
 
         private void GameOver()
@@ -147,7 +174,8 @@ namespace BasketballStatistics.UI
 
         private void TimeOutTimer(string TeamTimeOut)
         {
-            TimerPause();
+            if (_gameTimer.IsEnabled)
+                TimerPause();
 
             txtQuarter.Text = TeamTimeOut;
             btnStart.IsEnabled = false;
@@ -155,43 +183,62 @@ namespace BasketballStatistics.UI
             btnFirstTeamTimeOut.IsEnabled = false;
             btnSecondTeamTimeOut.IsEnabled = false;
 
-            StartTimeOut = DateTime.Now;
-            TimerTimeOut = TimeSpan.FromMinutes(1);
-
-            //   btnStart.IsEnabled = false;
-            //   btnStop.IsEnabled = false;
-
-            TimeOut.Start();
+            _timeoutStart = DateTime.Now;
+            _timeoutTimer.Start();
 
         }
 
         private void TimeOutTimer_Tick(object sender, EventArgs e)
         {
-            TimeSpan TimeLeft = TimerTimeOut - (DateTime.Now - StartTimeOut);
+            TimeSpan TimeLeft = _timeoutTime - (DateTime.Now - _timeoutStart);
             if (TimeLeft <= TimeSpan.Zero)
             {
-                TimeOut.Stop();
+                Sound.TimeIsOver();
+
+                _timeoutTimer.Stop();
                 btnStart.IsEnabled = true;
                 btnStop.IsEnabled = false;
-                btnFirstTeamTimeOut.IsEnabled = true;
-                btnSecondTeamTimeOut.IsEnabled = true;
-                txtQuarter.Text = Quarter.ToString();
-                TimeLeft = TimerGame - (DateTime.Now - StartTime.Add(DateTime.Now - PauseTime));
-                txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
+
+                if (_quarter <= 2 && _firstTeamTimeOuts < 2 || _quarter >= 3 && _firstTeamTimeOuts < 3)
+                    btnFirstTeamTimeOut.IsEnabled = true;
+                if (_quarter <= 2 && _secondTeamTimeOuts < 2 || _quarter >= 3 && _secondTeamTimeOuts < 3)
+                    btnSecondTeamTimeOut.IsEnabled = true;
+
+                txtQuarter.Text = "Quarter " + _quarter.ToString();
+                TimeLeft = _gameTime - (DateTime.Now - _gameStart.Add(DateTime.Now - _pauseTime));
+                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 0 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
             }
             else
-                txtTime.Text = TimeLeft.Minutes + ":" + TimeLeft.Seconds;
+                txtTime.Text = TimeLeft.Minutes + ":" + (TimeLeft.Seconds < 0 ? "0" + TimeLeft.Seconds : TimeLeft.Seconds.ToString());
         }
 
         private void btnFirstTeamTimeOut_Click(object sender, RoutedEventArgs e)
         {
             string s = "Time Out by 1 team";
+            _firstTeamTimeOuts++;
+
+            if (_firstTeamTimeOuts == 1)
+                firstTeamFirstTimeOut.Background = Brushes.Red;
+            else if (_firstTeamTimeOuts == 2)
+                firstTeamSecondTimeOut.Background = Brushes.Red;
+            else if (_firstTeamTimeOuts == 3)
+                firstTeamThirdTimeOut.Background = Brushes.Red;
+
             TimeOutTimer(s);
         }
 
         private void btnSecondTeamTimeOut_Click(object sender, RoutedEventArgs e)
         {
             string s = "Time Out by 2 team";
+            _secondTeamTimeOuts++;
+
+            if (_secondTeamTimeOuts == 1)
+                secondTeamFirstTimeOut.Background = Brushes.Red;
+            else if (_secondTeamTimeOuts == 2)
+                secondTeamSecondTimeOut.Background = Brushes.Red;
+            else if (_secondTeamTimeOuts == 3)
+                secondTeamThirdTimeOut.Background = Brushes.Red;
+
             TimeOutTimer(s);
         }
         #endregion
